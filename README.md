@@ -15,6 +15,6 @@ Options:
         -h, --help                  output usage information
         -v, --version               output the version number
         -p, --port <n>              specify the port number [3000]
-        -r --rate <bit rate>        specify the file transfer rate, e.g. 100k or 5m
+        -r, --rate <bit rate>       specify the file transfer rate, e.g. 100k or 5m
 
 and open [http://localhost:3000](http://localhost:3000) in your browser.
