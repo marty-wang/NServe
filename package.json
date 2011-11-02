@@ -1,0 +1,22 @@
+{
+  "author": "Mo Wang",
+  "name": "nserve",
+  "description": "A dead simple nodejs-backed file server",
+  "keywords": ["static", "file", "web", "server"],
+  "version": "0.0.2",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/marty-wang/Node.js-Web-Server.git"
+  },
+  "engines": {
+    "node": "~0.4.12"
+  },
+  "dependencies": {
+    "commander": ">=0.2.1",
+    "colors": "*"
+  },
+  "devDependencies": {},
+  "bin": {
+    "nserve": "./index.js"
+  }
+}
