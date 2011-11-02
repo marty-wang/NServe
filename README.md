@@ -9,6 +9,10 @@ NServe is a nodejs-powered static file server that is created to facilitate loca
 # Installation
         npm install nserve -g
 
+or install the development version from source code
+
+        npm install {source code folder} -g
+
 # Usage
 In the folder where you want to serve the files. Run the command below. 
 
