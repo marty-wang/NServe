@@ -65,6 +65,7 @@ _init = ()->
 
                     res.writeHead 200, {
                         'Content-Type': contentType
+                        'Access-Control-Allow-Origin': '*' # for cross-domain ajax
                     }
 
                     if _isVerbose
@@ -89,6 +90,7 @@ _init = ()->
         catch error
             res.writeHead 404, {
                 'Content-Type': mime.contentType ".txt"
+                'Access-Control-Allow-Origin': '*'
             }
             data = "File not found!\n"
             res.end data
