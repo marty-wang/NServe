@@ -1,4 +1,4 @@
 #!/usr/bin/env node
 
-var nserve = require('./nserve');
+var nserve = require('./lib/nserve');
 nserve.start();
