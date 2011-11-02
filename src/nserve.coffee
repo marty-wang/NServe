@@ -30,9 +30,9 @@ _version = ->
 _parseCLI = ()->
     program
         .version(_versionNumber)
-        .option('-p --port <n>', 'specify the port number', parseInt)
-        .option('-r --rate <bit rate>', 'specify the file transfer rate, e.g. 100k or 5m')
-        .option('-V --verbose', 'enter verbose mode')
+        .option('-p, --port <n>', 'specify the port number', parseInt)
+        .option('-r, --rate <bit rate>', 'specify the file transfer rate, e.g. 100k or 5m')
+        .option('-v, --verbose', 'enter verbose mode')
         .parse(process.argv)
 
     port = program.port

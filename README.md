@@ -21,9 +21,9 @@ In the folder where you want to serve the files. Run the command below.
 Options:
         
         -h, --help                  output usage information
-        -v, --version               output the version number
+        -V, --version               output the version number
         -p, --port <n>              specify the port number [3000]
         -r, --rate <bit rate>       specify the file transfer rate, e.g. 100k or 5m
-        -V, --verbose               enter verbose mode
+        -v, --verbose               enter verbose mode
 
 and open [http://localhost:3000](http://localhost:3000) in your browser.
