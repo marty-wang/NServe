@@ -1,5 +1,3 @@
-VERSION_NUMBER = "0.0.2"
-
 defaults =
     port: 3000
 
@@ -12,14 +10,21 @@ program = require "commander"
 
 transfer = require "./transfer"
 mime = require "./mime"
+versioning = require "./versioning"
 
 ### Private ###
+
+_versionNumber = "x.x.x"
+try
+    _versionNumber = versioning.getVersionNumber()
+catch error
+    console.error error
 
 _server = null
 
 _parseCLI = ()->
     program
-        .version(VERSION_NUMBER)
+        .version(_versionNumber)
         .option('-p --port <n>', 'specify the port number', parseInt)
         .parse(process.argv)
 
