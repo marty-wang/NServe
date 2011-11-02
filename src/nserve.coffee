@@ -37,8 +37,11 @@ _parseCLI = ()->
 
     port = program.port
     _port = port if port? and not isNaN(port)
-    _rate = program.rate
     _isVerbose = !!program.verbose
+
+    if program.rate?
+        transfer.parseRate program.rate
+        _rate = transfer.getRate()
 
 _now = ->
     if _isVerbose then " @ #{time.now()}" else ""
@@ -69,16 +72,13 @@ _init = ()->
 
                     # if user specified the desired transfer rate
                     if _rate?
-                        transfer.transferData data, stat.size, ((result) ->
+                        transfer.transferData data, stat.size, (result) ->
                             switch result.status
                                 when "transfer"
                                     res.write result.payload
                                 when "complete"
                                     res.end()
                                     console.log "[".grey + "served#{_now()}".green + "]".grey + " #{path}"
-                            ), {
-                                transferRate: _rate
-                            }
 
                     else # no transfer limit
                         res.end data
@@ -108,8 +108,8 @@ start = ->
     console.log "------------------------------------------"
     console.log "file server is running...".green
     console.log "   port ".cyan + "#{_port}"
-    console.log "   rate ".cyan + if _rate? then "#{_rate}" else "unlimited"
-    console.log "   mode ".cyan + "Verbose" if _isVerbose
+    console.log "   rate ".cyan + if _rate? then "#{_rate} (bps)" else "unlimited"
+    console.log "   mode ".cyan + "verbose" if _isVerbose
     console.log "------------------------------------------"
 
 exports.start = start
