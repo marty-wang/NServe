@@ -26,10 +26,12 @@ _parseCLI = ()->
     program
         .version(_versionNumber)
         .option('-p --port <n>', 'specify the port number', parseInt)
+        .option('-r --rate <bit rate>', 'specify the file transfer rate, e.g. 100k or 5m')
         .parse(process.argv)
 
     port = program.port
     defaults.port = port if port?
+    defaults.rate = program.rate
 
 _init = ()->
     http.createServer (req, res)->
@@ -52,25 +54,33 @@ _init = ()->
                         'Content-Type': contentType
                     }
 
-                    # for verbose mode
-                    # console.log "[".grey + "start".green + "]".grey + " #{path}"
-                    transfer.transferData data, stat.size, (result) ->
-                        switch result.status
-                            when "transfer"
-                                res.write result.payload
-                            when "complete"
-                                console.log "[".grey + "served".yellow + "]".grey + " #{path}"
-                                res.end()
+                    # if user specified the desired transfer rate
+                    if defaults.rate?
+                        # console.log "[".grey + "start".green + "]".grey + " #{path}"
+                        transfer.transferData data, stat.size, ((result) ->
+                            switch result.status
+                                when "transfer"
+                                    res.write result.payload
+                                when "complete"
+                                    res.end()
+                                    console.log "[".grey + "served".yellow + "]".grey + " #{path}"
+                            ), {
+                                transferRate: defaults.rate
+                            }
+
+                    else # no transfer limit
+                        res.end data
+                        console.log "[".grey + "served".yellow + "]".grey + " #{path}"
                 else
                     throw err
 
         catch error
-            console.error "failed to get file at #{path}".red
             res.writeHead 404, {
                 'Content-Type': mime.contentType ".txt"
             }
             data = "File not found!\n"
-            res.end(data);
+            res.end data
+            console.error "failed to get file at #{path}".red
 
 ### bootstrap ###
 
