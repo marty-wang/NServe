@@ -8,12 +8,7 @@ _bufLen = Math.round _speed/8   # covert from bits to bytes
 _rate = DEFAULT_RATE
 
 _transfer = (data, size, offset, bufLength, fn) ->
-
-    if offset >= size
-        return fn.call null, {
-            status: "complete"
-        } if fn?
-            
+        
     bufLength = Math.min bufLength, size-offset
     chunk = data.slice offset, offset+bufLength
     offset += chunk.length
@@ -21,6 +16,11 @@ _transfer = (data, size, offset, bufLength, fn) ->
         status: "transfer"
         payload: chunk
     } if fn?
+
+    if offset >= size
+        return fn.call null, {
+            status: "complete"
+        } if fn?
 
     setTimeout (->
         _transfer data, size, offset, bufLength, fn
