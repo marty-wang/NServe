@@ -1,6 +1,10 @@
-Using Node.js, this project simply serves out static files with the correct mimetype.
+NServe is a nodejs-powered static file server that is created to facilitate local software development. It is not designed for production use. 
 
-**Note:** nserve should be used to facilitate local development. It is not designed for production use. 
+# Features
+
+* Easy and Fast. One command and serve away.
+* Allow user-defined transfer rate to mimck the real situations.
+* More to come...
 
 # Installation
         npm install nserve -g
