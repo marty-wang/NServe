@@ -1,0 +1,39 @@
+<link rel="stylesheet" href="markdown.css">
+<script type="text/javascript" src="readme.js"></script>
+
+<p>NServe is a nodejs-powered static file server that is created to facilitate local software development. It is not designed for production use. </p>
+
+<h1>Features</h1>
+
+<ul>
+<li>Easy and Fast. One command and serve away.</li>
+<li>Allow user-defined transfer rate to mimck the real situations.</li>
+<li>More to come...</li>
+</ul>
+
+<h1>Installation</h1>
+
+<pre><code>    npm install nserve -g
+</code></pre>
+
+<p>or install the development version from source code</p>
+
+<pre><code>    npm install {source code folder} -g
+</code></pre>
+
+<h1>Usage</h1>
+
+<p>In the folder where you want to serve the files. Run the command below. </p>
+
+<p><strong>nserve</strong> [options]</p>
+
+<p>Options:</p>
+
+<pre><code>    -h, --help                  output usage information
+    -V, --version               output the version number
+    -p, --port &lt;n&gt;              specify the port number [3000]
+    -r, --rate &lt;bit rate&gt;       specify the file transfer rate, e.g. 100k or 5m
+    -v, --verbose               enter verbose mode
+</code></pre>
+
+<p>and open <a href="http://localhost:3000">http://localhost:3000</a> in your browser.</p>
