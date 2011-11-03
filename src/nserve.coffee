@@ -65,9 +65,6 @@ _router = ->
         app.get '/', (req, res, next) ->
             req.url += "index.html"
             next();
-
-        app.get '/index.html', (req, res, next) ->
-            res.end "this is index.html"
         
         ### Web service ###
 
