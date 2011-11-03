@@ -25,5 +25,6 @@ Options:
         -p, --port <n>              specify the port number [3000]
         -r, --rate <bit rate>       specify the file transfer rate, e.g. 100k or 5m
         -v, --verbose               enter verbose mode
+        -d, --directory <root>      specify the root directory, either relative or absolute [current directory]
 
 and open [http://localhost:3000](http://localhost:3000) in your browser.

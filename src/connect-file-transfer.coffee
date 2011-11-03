@@ -7,6 +7,7 @@ trans = require "./data-transfer"
 
 ### Private ###
 
+_root = null
 _rate = null
 _fn = null
 
@@ -17,7 +18,7 @@ _callback = (status, payload) ->
     } if _fn?
 
 _transfer = (req, res, next, fn) ->
-    path = "." + parse(req.url).pathname
+    path = _root + parse(req.url).pathname
 
     try
         stat = fs.statSync path
@@ -55,11 +56,12 @@ _transfer = (req, res, next, fn) ->
 ###
     if transferRate is null or undefined, it means unlimited
 ###
-transfer = (transferRate, fn)->
+transfer = (transferRate, root, fn)->
     if transferRate?
         trans.parseRate transferRate
         _rate = trans.getRate()    
 
+    _root = if root? then root else "."
     _fn = fn
 
     _callback "init", _rate
