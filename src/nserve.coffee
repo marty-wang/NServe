@@ -9,8 +9,6 @@ connect = require "connect"
 program = require "commander"
 colors = require "colors"
 
-versioning = require "./versioning"
-time = require './time'
 fileTransfer = (require "./connect-file-transfer").transfer
 util = require "./util"
 
@@ -26,7 +24,7 @@ _root = null
 
 _version = ->
     try
-        _versionNumber = versioning.getVersionNumber()
+        _versionNumber = util.getVersionNumber()
     catch error
         console.error error
 
@@ -45,11 +43,10 @@ _parseCLI = ()->
     _rate = program.rate
 
     root = util.absoluteDirPath program.directory
-    _root = if root? then root else process.cwd()
-    
+    _root = if root? then root else process.cwd() 
 
 _now = ->
-    if _isVerbose then " @ #{time.now()}" else ""
+    if _isVerbose then " @ #{util.now()}" else ""
 
 _fileTransferCallback  = (data) ->
     switch data.status
