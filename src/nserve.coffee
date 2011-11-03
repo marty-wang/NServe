@@ -5,12 +5,15 @@ sys = require "sys"
 fs = require "fs"
 http = require "http"
 parse = require("url").parse
+
+connect = require "connect"
 program = require "commander"
 
 transfer = require "./transfer"
 mime = require "./mime"
 versioning = require "./versioning"
 time = require './time'
+fileTransfer = (require "./connect-file-transfer").transfer
 
 ### Private ###
 
@@ -45,6 +48,40 @@ _parseCLI = ()->
 
 _now = ->
     if _isVerbose then " @ #{time.now()}" else ""
+
+_init_connect = () ->
+    connect.createServer(
+        _router(),
+        fileTransfer()
+    )
+
+_router = ->
+    connect.router (app) ->            
+
+        ### Routing ###
+
+        app.get '/', (req, res, next) ->
+            req.url += "index.html"
+            next();
+
+        app.get '/index.html', (req, res, next) ->
+            res.end "this is index.html"
+        
+        ### Web service ###
+
+        app.get '/ws/:file', (req, res, next) ->
+            res.writeHead 200, {
+                'Content-Type': "text/plain"
+                'Access-Control-Allow-Origin': '*' # for cross-domain ajax
+            }
+            res.end req.params.file
+        
+        app.post '/ws', (req, res, next) ->
+            res.writeHead 200, {
+                'Content-Type': "text/plain"
+                'Access-Control-Allow-Origin': '*' # for cross-domain ajax
+            }
+            res.end "post success"
 
 _init = ()->
     http.createServer (req, res)->
@@ -100,7 +137,7 @@ _init = ()->
 
 _version()
 _parseCLI()
-_server = _init()
+_server = _init_connect()
 
 ### Public ###
 

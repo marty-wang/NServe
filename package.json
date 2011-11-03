@@ -12,6 +12,7 @@
     "node": "~0.4.12"
   },
   "dependencies": {
+    "connect": ">=1.7.2",
     "commander": ">=0.3.2",
     "colors": "*"
   },
