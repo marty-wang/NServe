@@ -1,6 +1,5 @@
 DEFAULT_PORT = 3000
 
-colors = require "colors"
 sys = require "sys"
 fs = require "fs"
 http = require "http"
@@ -8,9 +7,8 @@ parse = require("url").parse
 
 connect = require "connect"
 program = require "commander"
+colors = require "colors"
 
-transfer = require "./transfer"
-mime = require "./mime"
 versioning = require "./versioning"
 time = require './time'
 fileTransfer = (require "./connect-file-transfer").transfer
@@ -42,18 +40,22 @@ _parseCLI = ()->
     _port = port if port? and not isNaN(port)
     _isVerbose = !!program.verbose
 
-    if program.rate?
-        transfer.parseRate program.rate
-        _rate = transfer.getRate()
+    _rate = program.rate
 
 _now = ->
     if _isVerbose then " @ #{time.now()}" else ""
 
-_init_connect = () ->
-    connect.createServer(
-        _router(),
-        fileTransfer()
-    )
+_fileTransferCallback  = (data) ->
+    switch data.status
+        when "init"
+            _rate = data.payload
+        when "start"
+            if _isVerbose
+                console.log "[".grey + "started#{_now()}".yellow + "]".grey + " #{data.payload}"
+        when "complete"
+            console.log "[".grey + "served#{_now()}".green + "]".grey + " #{data.payload}"
+        when "error"
+            console.error "[".grey + "failed#{_now()}".red + "]".grey + " #{data.payload}"
 
 _router = ->
     connect.router (app) ->            
@@ -83,61 +85,17 @@ _router = ->
             }
             res.end "post success"
 
-_init = ()->
-    http.createServer (req, res)->
-        path = parse(req.url).pathname
-        # if the path ends in a forward slash
-        # assume index.html
-        if path.match /\/$/
-            path += "index.html"
-        # make path relative to "."
-        path = "." + path
-
-        try
-            stat = fs.statSync path
-            fs.readFile path, (err, data)->
-                unless err
-                    filetype = (path.match /\.[a-zA-Z]+$/)[0]
-                    contentType = mime.contentType filetype
-
-                    res.writeHead 200, {
-                        'Content-Type': contentType
-                        'Access-Control-Allow-Origin': '*' # for cross-domain ajax
-                    }
-
-                    if _isVerbose
-                        console.log "[".grey + "started#{_now()}".yellow + "]".grey + " #{path}"
-
-                    # if user specified the desired transfer rate
-                    if _rate?
-                        transfer.transferData data, stat.size, (result) ->
-                            switch result.status
-                                when "transfer"
-                                    res.write result.payload
-                                when "complete"
-                                    res.end()
-                                    console.log "[".grey + "served#{_now()}".green + "]".grey + " #{path}"
-
-                    else # no transfer limit
-                        res.end data
-                        console.log "[".grey + "served#{_now()}".green + "]".grey + " #{path}"
-                else
-                    throw err
-
-        catch error
-            res.writeHead 404, {
-                'Content-Type': mime.contentType ".txt"
-                'Access-Control-Allow-Origin': '*'
-            }
-            data = "File not found!\n"
-            res.end data
-            console.error "[".grey + "failed#{_now()}".red + "]".grey + " #{path}"
+_init = () ->
+    connect.createServer(
+        _router(),
+        fileTransfer(_rate, _fileTransferCallback)
+    )
 
 ### bootstrap ###
 
 _version()
 _parseCLI()
-_server = _init_connect()
+_server = _init()
 
 ### Public ###
 
