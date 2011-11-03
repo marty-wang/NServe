@@ -87,7 +87,9 @@ _router = ->
 
 _init = () ->
     connect.createServer(
+        connect.favicon(),
         _router(),
+        connect.directory(process.cwd()),
         fileTransfer(_rate, _fileTransferCallback)
     )
 
