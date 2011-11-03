@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Ajax Test</title>     
+    <script type="text/javascript" src="jquery.min.js"></script>
+</head>
+<body>
+    <p>Open this page locally or run through other web server. You will see that the cross-domain ajax calls will work. This will be very handy for local development, because you will not need to change anything in your code, and it will just work as if they were same-domain ajax calls.</p>
+
+    <p id="message">This is message will be updated</p>
+    <button id="get_button">Get Request</button>
+    <button id="post_button">Post Request</button>
+    <script type="text/javascript">
+        var msg = document.getElementById("message");
+        var getBtn = document.getElementById('get_button');
+        var postBtn = document.getElementById('post_button');
+
+        getBtn.onclick = function(e) {
+            e.preventDefault();  
+            $.ajax({
+                url: "http://localhost:3000/ws/requested_file",
+                type: "get",
+                success: function(data) {
+                    msg.innerHTML = "get success: " + data;
+                },
+                error: function(err) {
+                    msg.innerHTML = "error: " + err;                    
+                }
+            });
+        };
+
+        postBtn.onclick = function(e) {
+            e.preventDefault();  
+            $.ajax({
+                url: "http://localhost:3000/ws",
+                type: "post",
+                success: function(data) {
+                    msg.innerHTML = "post success: " + data;
+                },
+                error: function(err) {
+                    msg.innerHTML = "error: " + err;                    
+                }
+            });
+        };
+
+    </script>
+</body>
+</html>

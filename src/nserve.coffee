@@ -75,20 +75,22 @@ _router = ->
             res.writeHead 200, {
                 'Content-Type': "text/plain"
                 'Access-Control-Allow-Origin': '*' # for cross-domain ajax
+                'Access-Control-Allow-Headers': 'X-Requested-With'
             }
             res.end req.params.file
-        
+                
         app.post '/ws', (req, res, next) ->
             res.writeHead 200, {
                 'Content-Type': "text/plain"
                 'Access-Control-Allow-Origin': '*' # for cross-domain ajax
+                'Access-Control-Allow-Headers': 'X-Requested-With'
             }
-            res.end "post success"
+            res.end "post result"
 
 _init = () ->
     connect.createServer(
-        connect.favicon(),
         _router(),
+        connect.favicon(),
         connect.directory(process.cwd()),
         fileTransfer(_rate, _fileTransferCallback)
     )
