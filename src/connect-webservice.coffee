@@ -4,7 +4,7 @@ path = require 'path'
 
 _root = null
 _wsFolder = null
-_timeout = null
+_delay = null
 
 _isWS = (pathname) ->
     pathname is "/#{_wsFolder}" or pathname.indexOf("/#{_wsFolder}/") is 0
@@ -35,13 +35,13 @@ _respond = (req, res, pathname, errorFile) ->
         else
             pathname = path.resolve pathname, "../#{errorFile}"
             _readFile req, res, pathname, 404
-    ), _timeout
+    ), _delay
 
-webservice = (root='.', webserviceFolder='ws', timeout=0) ->
+webservice = (root='.', webserviceFolder='ws', delay=0) ->
 
     _root = root
     _wsFolder = webserviceFolder
-    _timeout = timeout
+    _delay = delay
 
     (req, res, next) ->
 

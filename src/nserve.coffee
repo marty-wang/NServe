@@ -1,6 +1,6 @@
 DEFAULT_PORT = 3000
 DEFAULT_WEBSERVICE_FOLDER = "ws"
-DEFAULT_WEBSERVICE_TIMEOUT = 0
+DEFAULT_WEBSERVICE_DELAY = 0
 
 sys = require "sys"
 fs = require "fs"
@@ -26,7 +26,7 @@ _port = DEFAULT_PORT
 _rate = null
 _root = null
 _webserviceFolder = null
-_webserviceTimeout = 0
+_webserviceDelay = 0
 
 _version = ->
     try
@@ -42,7 +42,7 @@ _parseCLI = ()->
         .option('-v, --verbose', 'enter verbose mode')
         .option('-d, --directory <root>', 'specify the root directory, either relative or absolute [current directory]')
         .option('-w, --webservice-folder <folder name>', 'specify the webservice folder name ["ws"]')
-        .option('-t, --webservice-timeout <n>', 'specify the webservice timeout in millisecond [0]', parseInt)
+        .option('-D, --webservice-delay <n>', 'specify the delay of the web service in millisecond [0]', parseInt)
         .parse(process.argv)
 
     port = program.port
@@ -56,8 +56,8 @@ _parseCLI = ()->
     wsFolder = program.webserviceFolder
     _webserviceFolder = if wsFolder? then util.normalizeFolderName(wsFolder) else DEFAULT_WEBSERVICE_FOLDER
 
-    wsTimeout = program.webserviceTimeout
-    _webserviceTimeout = if wsTimeout? and not isNaN(wsTimeout) then wsTimeout else DEFAULT_WEBSERVICE_TIMEOUT
+    wsDelay = program.webserviceDelay
+    _webserviceDelay = if wsDelay? and not isNaN(wsDelay) then wsDelay else DEFAULT_WEBSERVICE_DELAY
 
 _now = ->
     if _isVerbose then " @ #{util.now()}" else ""
@@ -86,7 +86,7 @@ _init = () ->
         connect.bodyParser(),
         connect.query(),
         _router(),
-        webservice(_root, _webserviceFolder, _webserviceTimeout),
+        webservice(_root, _webserviceFolder, _webserviceDelay),
         connect.favicon(),
         connect.directory(_root),
         fileTransfer(_rate, _root, _fileTransferCallback)
@@ -109,7 +109,7 @@ start = ->
     console.log "   port ".cyan + "#{_port}"
     console.log "   rate ".cyan + if _rate? then "#{_rate} (bps)" else "unlimited"
     console.log "   webservice folder ".cyan + "#{_webserviceFolder}"
-    console.log "   webservice timeout ".cyan + "#{_webserviceTimeout} ms"
+    console.log "   webservice delay ".cyan + "#{_webserviceDelay} ms"
     console.log "   mode ".cyan + "verbose" if _isVerbose
     console.log "------------------------------------------"
 
