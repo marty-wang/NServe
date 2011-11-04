@@ -4,7 +4,7 @@ NServe is a nodejs-powered static file server that is created to facilitate loca
 
 * Easy and Fast. One command and serve away.
 * Allow user-defined transfer rate to mimck the real situations.
-* Timeout cross-domain mock web services, including GET and POST. 
+* Delay cross-domain mock web services, including GET and POST. 
 * More to come...
 
 # Installation
