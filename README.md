@@ -42,6 +42,6 @@ and open [http://localhost:3000](http://localhost:3000) in your browser.
 
     For an example, please reference the [**ajax.html**](https://github.com/marty-wang/NServe/blob/master/samples/ajax.html) in the **samples** folder.
 
-    Again, by default it defaults to ***ws*** for all the web services. But you can change that in the command line with the option **-w** or **--webservice-folder**, and refer to any folder you like under the root where ***nserve*** is running.
+    Again, by default it defaults to ***ws*** folder for all the web services. But you can change to another folder in the command line with the option **-w** or **--webservice-folder**, and refer to that folder under the root where ***nserve*** is running.
 
     Also you have the ability to "slow down" the web services by using th option **-D** or **--webservice-delay**. You want to do that in the situation where you want to test your loader, for example.
