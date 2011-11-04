@@ -5,7 +5,7 @@
     <script type="text/javascript" src="js/jquery.min.js"></script>
 </head>
 <body>
-    <p>Open this page locally or run through other web server. You will see that the cross-domain ajax calls will work. This will be very handy for local development, because you will not need to change anything in your code, and it will just work as if they were same-domain ajax calls.</p>
+    <p>Open this page locally or run through other web server. You will see that the cross-domain ajax calls will work. This will be very handy for local development, because you will not need to change anything in your code, and it will just work as if they were same-domain ajax calls. Also you have the ability to specify the webservice timeout so that you can test your loader.</p>
 
     <p id="message">This is message will be updated</p>
     <button id="get_button_s">Get Request Success</button>
@@ -27,6 +27,9 @@
                 type: "get",
                 success: function(data) {
                     msg.innerHTML = "get success: " + data;
+                },
+                error: function(jqXHR, text) {
+                    msg.innerHTML = "get error: " + jqXHR.responseText;                    
                 }
             });
         };
@@ -34,7 +37,7 @@
         getBtnF.onclick = function(e) {
             e.preventDefault();  
             $.ajax({
-                url: "http://localhost:3000/ws/data.json?error=true",
+                url: "http://localhost:3000/ws/data.json?error=error.json",
                 type: "get",
                 error: function(jqXHR, text) {
                     msg.innerHTML = "get error: " + jqXHR.responseText;                    
@@ -45,11 +48,14 @@
         postBtnS.onclick = function(e) {
             e.preventDefault();  
             $.ajax({
-                url: "http://localhost:3000/ws",
+                url: "http://localhost:3000/ws/data.json",
                 data: "key=value",
                 type: "post",
                 success: function(data) {
                     msg.innerHTML = "post success: " + data;
+                },
+                error: function(jqXHR, text) {
+                    msg.innerHTML = "post error: " + jqXHR.responseText;                    
                 }
             });
         };
@@ -57,8 +63,8 @@
         postBtnF.onclick = function(e) {
             e.preventDefault();  
             $.ajax({
-                url: "http://localhost:3000/ws",
-                data: "error=true",
+                url: "http://localhost:3000/ws/data.json",
+                data: "error=error.json",
                 type: "post",
                 error: function(jqXHR, text) {
                     msg.innerHTML = "post error: " + jqXHR.responseText;                    

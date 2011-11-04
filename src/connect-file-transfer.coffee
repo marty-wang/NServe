@@ -23,7 +23,7 @@ _transfer = (req, res, next, fn) ->
     try
         stat = fs.statSync path
         fs.readFile path, (err, data)->
-            unless err
+            unless err?
                 _callback "start", path
                 
                 contentType = mime.lookup path

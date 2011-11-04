@@ -28,6 +28,11 @@ absoluteDirPath = (pathStr) ->
 
     absDir
 
+normalizeFolderName = (folder) ->
+    regEx = /\\|\//g
+    folder.replace regEx, ''
+    
+
 now = ->
     now = new Date()
     nowStr = now.toTimeString()
@@ -38,4 +43,5 @@ now = ->
 
 exports.getVersionNumber = getVersionNumber
 exports.absoluteDirPath = absoluteDirPath
+exports.normalizeFolderName = normalizeFolderName
 exports.now = now

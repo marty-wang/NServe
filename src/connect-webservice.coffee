@@ -1,12 +1,13 @@
 parse = require("url").parse
+fs = require 'fs'
+path = require 'path'
 
-# TODO: add timeout var
-
-# should be configurable
-_wsDir = 'ws'
+_root = null
+_wsFolder = null
+_timeout = null
 
 _isWS = (pathname) ->
-    pathname is "/#{_wsDir}" or pathname.indexOf("/#{_wsDir}/") is 0
+    pathname is "/#{_wsFolder}" or pathname.indexOf("/#{_wsFolder}/") is 0
 
 _resHeader = {
     'Content-Type': "text/plain"
@@ -14,37 +15,46 @@ _resHeader = {
     'Access-Control-Allow-Headers': 'X-Requested-With'
 }
 
-webservice = () ->
+_readFile = (req, res, path, statusCode) ->
+    fs.readFile _root+path, (err, data) ->
+        unless err?
+            res.writeHead statusCode, _resHeader
+            res.end data
+        else
+            res.writeHead 404, _resHeader
+            retData = {
+                statusCode: 404
+                responseText: "Unexpected Error: #{req.method} #{path}"
+            }
+            res.end JSON.stringify retData
+
+_respond = (req, res, pathname, errorFile) ->
+    setTimeout (->
+        unless errorFile?
+            _readFile req, res, pathname, 200
+        else
+            pathname = path.resolve pathname, "../#{errorFile}"
+            _readFile req, res, pathname, 404
+    ), _timeout
+
+webservice = (root='.', webserviceFolder='ws', timeout=0) ->
+
+    _root = root
+    _wsFolder = webserviceFolder
+    _timeout = timeout
 
     (req, res, next) ->
 
-        pUrl = parse(req.url)
-        pathname = pUrl.pathname
+        pathname = parse(req.url).pathname
 
         if _isWS pathname
             switch req.method.toUpperCase()
                 when 'GET'
-                    query = pUrl.query
-                    
-                    # TODO: add logic to get the file based on the pathname
-                    # return 404 if file cannot be found
-                                        
-                    if query? and query.indexOf("error") > -1
-                        res.writeHead 404, _resHeader
-                        res.end "GET Failure: #{pathname}"
-                    else
-                        res.writeHead 200, _resHeader
-                        res.end "GET: #{pathname}"
-
+                    errorFile = req.query['error']
+                    _respond req, res, pathname, errorFile                      
                 when 'POST'
-                    body = req.body
-
-                    unless body['error']?
-                        res.writeHead 200, _resHeader
-                        res.end "POST Success: #{pathname}"
-                    else
-                        res.writeHead 404, _resHeader
-                        res.end "POST Failure: #{pathname}"
+                    errorFile = req.body['error']
+                    _respond req, res, pathname, errorFile                      
         else
             next()
 

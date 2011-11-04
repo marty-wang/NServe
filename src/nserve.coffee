@@ -1,9 +1,12 @@
 DEFAULT_PORT = 3000
+DEFAULT_WEBSERVICE_FOLDER = "ws"
+DEFAULT_WEBSERVICE_TIMEOUT = 0
 
 sys = require "sys"
 fs = require "fs"
 http = require "http"
 parse = require("url").parse
+path = require "path"
 
 connect = require "connect"
 program = require "commander"
@@ -22,6 +25,8 @@ _isVerbose = false
 _port = DEFAULT_PORT
 _rate = null
 _root = null
+_webserviceFolder = null
+_webserviceTimeout = 0
 
 _version = ->
     try
@@ -36,6 +41,8 @@ _parseCLI = ()->
         .option('-r, --rate <bit rate>', 'specify the file transfer rate, e.g. 100k or 5m')
         .option('-v, --verbose', 'enter verbose mode')
         .option('-d, --directory <root>', 'specify the root directory, either relative or absolute [current directory]')
+        .option('-w, --webservice-folder <folder name>', 'specify the webservice folder name ["ws"]')
+        .option('-t, --webservice-timeout <n>', 'specify the webservice timeout in millisecond [0]', parseInt)
         .parse(process.argv)
 
     port = program.port
@@ -44,7 +51,13 @@ _parseCLI = ()->
     _rate = program.rate
 
     root = util.absoluteDirPath program.directory
-    _root = if root? then root else process.cwd() 
+    _root = if root? then root else process.cwd()
+
+    wsFolder = program.webserviceFolder
+    _webserviceFolder = if wsFolder? then util.normalizeFolderName(wsFolder) else DEFAULT_WEBSERVICE_FOLDER
+
+    wsTimeout = program.webserviceTimeout
+    _webserviceTimeout = if wsTimeout? and not isNaN(wsTimeout) then wsTimeout else DEFAULT_WEBSERVICE_TIMEOUT
 
 _now = ->
     if _isVerbose then " @ #{util.now()}" else ""
@@ -71,8 +84,9 @@ _router = ->
 _init = () ->
     connect.createServer(
         connect.bodyParser(),
+        connect.query(),
         _router(),
-        webservice(),
+        webservice(_root, _webserviceFolder, _webserviceTimeout),
         connect.favicon(),
         connect.directory(_root),
         fileTransfer(_rate, _root, _fileTransferCallback)
@@ -94,6 +108,8 @@ start = ->
     console.log "   root ".cyan + "#{_root}"
     console.log "   port ".cyan + "#{_port}"
     console.log "   rate ".cyan + if _rate? then "#{_rate} (bps)" else "unlimited"
+    console.log "   webservice folder ".cyan + "#{_webserviceFolder}"
+    console.log "   webservice timeout ".cyan + "#{_webserviceTimeout} ms"
     console.log "   mode ".cyan + "verbose" if _isVerbose
     console.log "------------------------------------------"
 
