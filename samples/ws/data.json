@@ -1,0 +1,6 @@
+{
+  "author": "Mo Wang",
+  "name": "nserve",
+  "description": "A nodejs-powered static file server for development",
+  "keywords": ["static", "file", "web", "server"]
+}

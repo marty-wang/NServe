@@ -8,37 +8,60 @@
     <p>Open this page locally or run through other web server. You will see that the cross-domain ajax calls will work. This will be very handy for local development, because you will not need to change anything in your code, and it will just work as if they were same-domain ajax calls.</p>
 
     <p id="message">This is message will be updated</p>
-    <button id="get_button">Get Request</button>
-    <button id="post_button">Post Request</button>
+    <button id="get_button_s">Get Request Success</button>
+    <button id="get_button_f">Get Request Failure</button>
+    <br><br>
+    <button id="post_button_s">Post Request Success</button>
+    <button id="post_button_f">Post Request Failure</button>
     <script type="text/javascript">
         var msg = document.getElementById("message");
-        var getBtn = document.getElementById('get_button');
-        var postBtn = document.getElementById('post_button');
+        var getBtnS = document.getElementById('get_button_s');
+        var postBtnS = document.getElementById('post_button_s');
+        var getBtnF = document.getElementById('get_button_f');
+        var postBtnF = document.getElementById('post_button_f');
 
-        getBtn.onclick = function(e) {
+        getBtnS.onclick = function(e) {
             e.preventDefault();  
             $.ajax({
-                url: "http://localhost:3000/ws/requested_file",
+                url: "http://localhost:3000/ws/data.json",
                 type: "get",
                 success: function(data) {
                     msg.innerHTML = "get success: " + data;
-                },
-                error: function(err) {
-                    msg.innerHTML = "error: " + err;                    
                 }
             });
         };
 
-        postBtn.onclick = function(e) {
+        getBtnF.onclick = function(e) {
+            e.preventDefault();  
+            $.ajax({
+                url: "http://localhost:3000/ws/data.json?error=true",
+                type: "get",
+                error: function(jqXHR, text) {
+                    msg.innerHTML = "get error: " + jqXHR.responseText;                    
+                }
+            });
+        };
+
+        postBtnS.onclick = function(e) {
             e.preventDefault();  
             $.ajax({
                 url: "http://localhost:3000/ws",
+                data: "key=value",
                 type: "post",
                 success: function(data) {
                     msg.innerHTML = "post success: " + data;
-                },
-                error: function(err) {
-                    msg.innerHTML = "error: " + err;                    
+                }
+            });
+        };
+
+        postBtnF.onclick = function(e) {
+            e.preventDefault();  
+            $.ajax({
+                url: "http://localhost:3000/ws",
+                data: "error=true",
+                type: "post",
+                error: function(jqXHR, text) {
+                    msg.innerHTML = "post error: " + jqXHR.responseText;                    
                 }
             });
         };

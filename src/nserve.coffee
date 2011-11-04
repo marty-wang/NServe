@@ -10,6 +10,7 @@ program = require "commander"
 colors = require "colors"
 
 fileTransfer = (require "./connect-file-transfer").transfer
+webservice = (require "./connect-webservice").webservice
 util = require "./util"
 
 ### Private ###
@@ -63,33 +64,15 @@ _fileTransferCallback  = (data) ->
 _router = ->
     connect.router (app) ->            
 
-        ### Routing ###
-
         app.get '/', (req, res, next) ->
             req.url += "index.html"
             next();
         
-        ### Web service ###
-
-        app.get '/ws/:file', (req, res, next) ->
-            res.writeHead 200, {
-                'Content-Type': "text/plain"
-                'Access-Control-Allow-Origin': '*' # for cross-domain ajax
-                'Access-Control-Allow-Headers': 'X-Requested-With'
-            }
-            res.end req.params.file
-                
-        app.post '/ws', (req, res, next) ->
-            res.writeHead 200, {
-                'Content-Type': "text/plain"
-                'Access-Control-Allow-Origin': '*' # for cross-domain ajax
-                'Access-Control-Allow-Headers': 'X-Requested-With'
-            }
-            res.end "post result"
-
 _init = () ->
     connect.createServer(
+        connect.bodyParser(),
         _router(),
+        webservice(),
         connect.favicon(),
         connect.directory(_root),
         fileTransfer(_rate, _root, _fileTransferCallback)
