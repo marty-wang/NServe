@@ -46,7 +46,6 @@ webservice = () ->
                         res.writeHead 404, _resHeader
                         res.end "POST Failure: #{pathname}"
         else
-            console.log "should next"
             next()
 
 exports.webservice = webservice
