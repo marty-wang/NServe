@@ -58,8 +58,7 @@ _transfer = (req, res, next, fn) ->
 ###
 transfer = (transferRate, root, fn)->
     if transferRate?
-        trans.parseRate transferRate
-        _rate = trans.getRate()    
+        _rate = trans.parseRate transferRate
 
     _root = if root? then root else "."
     _fn = fn
