@@ -38,7 +38,7 @@ _parseCLI = ()->
     program
         .version(_versionNumber)
         .option('-p, --port <n>', 'specify the port number [3000]', parseInt)
-        .option('-r, --rate <bit rate>', 'specify the file transfer rate, e.g. 100k or 5m')
+        .option('-r, --rate <bit rate>', 'specify the file transfer rate in Bps, e.g. 100K or 5M')
         .option('-v, --verbose', 'enter verbose mode')
         .option('-d, --directory <root>', 'specify the root directory, either relative or absolute [current directory]')
         .option('-w, --webservice-folder <folder name>', 'specify the webservice folder name ["ws"]')
@@ -107,7 +107,7 @@ start = ->
     console.log "file server is running...".green
     console.log "   root ".cyan + "#{_root}"
     console.log "   port ".cyan + "#{_port}"
-    console.log "   rate ".cyan + if _rate? then "#{_rate} (bps)" else "unlimited"
+    console.log "   rate ".cyan + if _rate? then "#{_rate}(Bps)" else "unlimited"
     console.log "   webservice folder ".cyan + "#{_webserviceFolder}"
     console.log "   webservice delay ".cyan + "#{_webserviceDelay} ms"
     console.log "   mode ".cyan + "verbose" if _isVerbose

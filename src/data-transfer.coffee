@@ -1,10 +1,10 @@
-DEFAULT_RATE = "500K" # 500k bps (bit per second)
+DEFAULT_RATE = "500K" # 500KBps (bytes per second)
 DEFAULT_SPEAD = 512000
 
 ### Private ###
 
 _speed = DEFAULT_SPEAD
-_bufLen = Math.round _speed/8   # covert from bits to bytes
+_bufLen = _speed
 _rate = DEFAULT_RATE
 
 _transfer = (data, size, offset, bufLength, fn) ->
@@ -42,8 +42,10 @@ parseRate = (transferRate) ->
             when 'M' then _speed *= 1024*1024
         
         # TODO: set to default speed if the specified speed is too small
-        _bufLen = Math.round _speed/8 # covert from bits to bytes
+        _bufLen = _speed
         _speed = Math.round _speed
+    
+    _rate
 
 getRate = ->
     _rate

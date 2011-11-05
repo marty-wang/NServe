@@ -24,7 +24,7 @@ Options:
         -h, --help                                  output usage information
         -V, --version                               output the version number
         -p, --port <n>                              specify the port number [3000]
-        -r, --rate <bit rate>                       specify the file transfer rate, e.g. 100k or 5m
+        -r, --rate <bit rate>                       specify the file transfer rate in Bps, e.g. 100K or 5M
         -v, --verbose                               enter verbose mode
         -d, --directory <root>                      specify the root directory, relative or absolute [current directory]
         -w, --webservice-folder <folder name>       specify the web service folder name ["ws"]
