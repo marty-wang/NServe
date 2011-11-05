@@ -5,7 +5,7 @@
     <script type="text/javascript" src="js/jquery.min.js"></script>
 </head>
 <body>
-    <p>Open this page locally or run through other web server. You will see that the cross-domain ajax calls will work. This will be very handy for local development, because you will not need to change anything in your code, and it will just work as if they were same-domain ajax calls. Also you have the ability to specify the webservice timeout so that you can test your loader.</p>
+    <p>Open this page locally or run through other web server. You will see that the cross-domain ajax calls will work. This will be very handy for local development, because you will not need to change anything in your code, and it will just work as if they were same-domain ajax calls. Also you have the ability to specify the webservice delay so that you can test your loader.</p>
 
     <p id="message">This is message will be updated</p>
     <button id="get_button_s">Get Request Success</button>
@@ -21,7 +21,8 @@
         var postBtnF = document.getElementById('post_button_f');
 
         getBtnS.onclick = function(e) {
-            e.preventDefault();  
+            e.preventDefault();
+            msg.innerHTML = "getting...";  
             $.ajax({
                 url: "http://localhost:3000/ws/data.json",
                 type: "get",
@@ -36,6 +37,7 @@
 
         getBtnF.onclick = function(e) {
             e.preventDefault();  
+            msg.innerHTML = "getting...";  
             $.ajax({
                 url: "http://localhost:3000/ws/data.json?error=error.json",
                 type: "get",
@@ -47,6 +49,7 @@
 
         postBtnS.onclick = function(e) {
             e.preventDefault();  
+            msg.innerHTML = "posting...";  
             $.ajax({
                 url: "http://localhost:3000/ws/data.json",
                 data: "key=value",
@@ -61,7 +64,8 @@
         };
 
         postBtnF.onclick = function(e) {
-            e.preventDefault();  
+            e.preventDefault(); 
+            msg.innerHTML = "posting...";   
             $.ajax({
                 url: "http://localhost:3000/ws/data.json",
                 data: "error=error.json",
