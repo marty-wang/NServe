@@ -8,6 +8,7 @@ NServe is a nodejs-powered static file server that is created to facilitate loca
 * More to come...
 
 # Installation
+
         npm install nserve -g
 
 or install the development version from source code
@@ -15,6 +16,7 @@ or install the development version from source code
         npm install {source code folder} -g
 
 # Usage
+
 In the folder where you want to serve the files. Run the command below. 
 
 **nserve** [options]
@@ -45,3 +47,13 @@ and open [http://localhost:3000](http://localhost:3000) in your browser.
     Again, by default it defaults to ***ws*** folder for all the web services. But you can change to another folder in the command line with the option **-w** or **--webservice-folder**, and refer to that folder under the root where ***nserve*** is running.
 
     Also you have the ability to "slow down" the web services by using th option **-D** or **--webservice-delay**. You want to do that in the situation where you want to test your loader, for example.
+
+# License (MIT)
+
+Copyright (c) 2011 Mo Wang <<mo.oss.wang@gmail.com>>
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
