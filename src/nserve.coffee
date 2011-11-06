@@ -87,7 +87,7 @@ _init = () ->
         connect.query(),
         _router(),
         webservice(_root, _webserviceFolder, _webserviceDelay),
-        connect.favicon(),
+        connect.favicon(path.resolve __dirname, "../public/favicon.ico"),
         connect.directory(_root),
         fileTransfer(_rate, _root, _fileTransferCallback)
     )
