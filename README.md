@@ -1,5 +1,7 @@
 NServe is a nodejs-powered static file server that is created to facilitate local software development. It is not designed for production use. 
 
+![Terminal Screenshot](https://github.com/marty-wang/NServe/blob/master/screenshots/terminal.png)
+
 # Features
 
 * Easy and Fast. One command and serve away.
