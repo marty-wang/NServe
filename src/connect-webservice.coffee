@@ -38,15 +38,12 @@ _respond = (req, res, pathname, errorFile) ->
     ), _delay
 
 webservice = (root='.', webserviceFolder='ws', delay=0) ->
-
     _root = root
     _wsFolder = webserviceFolder
     _delay = delay
 
     (req, res, next) ->
-
         pathname = parse(req.url).pathname
-
         if _isWS pathname
             switch req.method.toUpperCase()
                 when 'GET'

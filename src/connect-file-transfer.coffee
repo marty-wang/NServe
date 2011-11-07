@@ -24,16 +24,27 @@ _transfer = (req, res, next, fn) ->
         stat = fs.statSync path
         fs.readFile path, (err, data)->
             unless err?
-                _callback "start", path
-                
                 contentType = mime.lookup path
+                _callback "start", {
+                    request: req
+                    path: path
+                    content: data
+                    contentType: contentType
+                }
+
+                size = stat.size
+
+                if req.modifiedData?
+                    data = req.modifiedData
+                    size = req.modifiedDataSize
+
                 res.writeHead 200, {
                     'Content-Type': contentType
                 }
 
                 # if user specified the desired transfer rate
                 if _rate?
-                    trans.transferData data, stat.size, (result) ->
+                    trans.transferData data, size, (result) ->
                         switch result.status
                             when "transfer"
                                 res.write result.payload
@@ -66,6 +77,10 @@ transfer = (transferRate, root, fn)->
     _callback "init", _rate
     
     (req, res, next) ->
-        _transfer req, res, next, fn
+        switch req.method.toUpperCase()
+            when "GET", "POST"
+                _transfer req, res, next, fn
+            else
+                next()
 
 exports.transfer = transfer

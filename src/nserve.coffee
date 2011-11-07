@@ -14,6 +14,7 @@ colors = require "colors"
 
 fileTransfer = (require "./connect-file-transfer").transfer
 webservice = (require "./connect-webservice").webservice
+livepage = require './connect-livepage'
 util = require "./util"
 
 ### Private ###
@@ -27,7 +28,8 @@ _rate = null
 _root = null
 _webserviceFolder = null
 _webserviceDelay = 0
-
+_isLiveReload = false
+  
 _version = ->
     try
         _versionNumber = util.getVersionNumber()
@@ -43,6 +45,7 @@ _parseCLI = ()->
         .option('-d, --directory <root>', 'specify the root directory, either relative or absolute [current directory]')
         .option('-w, --webservice-folder <folder name>', 'specify the webservice folder name ["ws"]')
         .option('-D, --webservice-delay <n>', 'specify the delay of the web service in millisecond [0]', parseInt)
+        .option('-l, --live-reload', 'automatically reload HTML/CSS/JS files')
         .parse(process.argv)
 
     port = program.port
@@ -59,6 +62,8 @@ _parseCLI = ()->
     wsDelay = program.webserviceDelay
     _webserviceDelay = if wsDelay? and not isNaN(wsDelay) then wsDelay else DEFAULT_WEBSERVICE_DELAY
 
+    _isLiveReload = !!program.liveReload
+
 _now = ->
     if _isVerbose then " @ #{util.now()}" else ""
 
@@ -67,8 +72,19 @@ _fileTransferCallback  = (data) ->
         when "init"
             _rate = data.payload
         when "start"
+            if _isLiveReload
+                payload = data.payload
+                contentType = payload.contentType
+                if contentType is "text/html"
+                    # insert live script here
+                    req = payload.request
+                    content = payload.content
+                    content = livepage.insertLiveScript content, contentType
+                    req.modifiedData = content
+                    req.modifiedDataSize = content.length
+
             if _isVerbose
-                console.log "[".grey + "started#{_now()}".yellow + "]".grey + " #{data.payload}"
+                console.log "[".grey + "started#{_now()}".yellow + "]".grey + " #{payload.path}"
         when "complete"
             console.log "[".grey + "served#{_now()}".green + "]".grey + " #{data.payload}"
         when "error"
@@ -86,6 +102,7 @@ _init = () ->
         connect.bodyParser(),
         connect.query(),
         _router(),
+        livepage.live(_root, _isLiveReload),
         webservice(_root, _webserviceFolder, _webserviceDelay),
         connect.favicon(path.resolve __dirname, "../public/favicon.ico"),
         connect.directory(_root),
@@ -108,6 +125,7 @@ start = ->
     console.log "   root ".cyan + "#{_root}"
     console.log "   port ".cyan + "#{_port}"
     console.log "   rate ".cyan + if _rate? then "#{_rate}(Bps)" else "unlimited"
+    console.log "   livereload: ".cyan + "#{_isLiveReload}"
     console.log "   webservice folder ".cyan + "#{_webserviceFolder}"
     console.log "   webservice delay ".cyan + "#{_webserviceDelay} ms"
     console.log "   mode ".cyan + "verbose" if _isVerbose

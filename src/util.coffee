@@ -38,6 +38,9 @@ now = ->
     nowStr = now.toTimeString()
     nowArr = nowStr.split ' '
     "#{nowArr[0]} #{nowArr[2]}"
+
+strSplice = (string, idx, remove, subStr) ->
+    string.slice(0,idx) + subStr + string.slice(idx + Math.abs(remove))
     
 ### exports ###
 
@@ -45,3 +48,4 @@ exports.getVersionNumber = getVersionNumber
 exports.absoluteDirPath = absoluteDirPath
 exports.normalizeFolderName = normalizeFolderName
 exports.now = now
+exports.strSplice = strSplice

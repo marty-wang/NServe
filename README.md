@@ -6,7 +6,8 @@ NServe is a nodejs-powered static file server that is created to facilitate loca
 
 * Easy and Fast. One command and serve away.
 * Allow user-defined transfer rate to mimck the real situations.
-* Delay cross-domain mock web services, including GET and POST. 
+* Delay cross-domain mock web services, including GET and POST.
+* Live reload HTML/CSS/JS files. No need to manually refersh browsers.
 * More to come...
 
 # Installation
@@ -33,6 +34,7 @@ Options:
         -d, --directory <root>                      specify the root directory, relative or absolute [current directory]
         -w, --webservice-folder <folder name>       specify the web service folder name ["ws"]
         -D, --webservice-delay <n>                  specify the delay of the web service in millisecond [0]
+        -l, --live-reload                           automatically reload HTML/CSS/JS files
 
 and open [http://localhost:3000](http://localhost:3000) in your browser.
 
