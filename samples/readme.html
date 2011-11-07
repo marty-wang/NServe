@@ -1,71 +1,282 @@
-<link rel="stylesheet" href="css/markdown.css">
-<script type="text/javascript" src="js/readme.js"></script>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Monroe</title>
+    <style type="text/css">
+        body{
+            margin: 0 auto;
+            font-family: Georgia, Palatino, serif;
+            color: #444444;
+            line-height: 1;
+            max-width: 960px;
+            padding: 30px;
+        }
+        h1, h2, h3, h4 {
+            color: #111111;
+            font-weight: 400;
+        }
+        h1, h2, h3, h4, h5, p {
+            margin-bottom: 24px;
+            padding: 0;
+        }
+        h1 {
+            font-size: 48px;
+        }
+        h2 {
+            font-size: 36px;
+            /* The bottom margin is small. It's designed to be used with gray meta text
+             * below a post title. */
+            margin: 24px 0 6px;
+        }
+        h3 {
+            font-size: 24px;
+        }
+        h4 {
+            font-size: 21px;
+        }
+        h5 {
+            font-size: 18px;
+        }
+        a {
+            color: #0099ff;
+            margin: 0;
+            padding: 0;
+            vertical-align: baseline;
+        }
+        a:hover {
+            text-decoration: none;
+            color: #ff6600;
+        }
+        a:visited {
+            color: purple;
+        }
+        ul, ol {
+            padding: 0;
+            margin: 0;
+        }
+        li {
+            line-height: 24px;
+        }
+        li ul, li ul {
+            margin-left: 24px;
+        }
+        p, ul, ol {
+            font-size: 16px;
+            line-height: 24px;
+            max-width: 540px;
+        }
+        pre {
+            padding: 0px 24px;
+            max-width: 800px;
+            white-space: pre-wrap;
+        }
+        code {
+            font-family: Consolas, Monaco, Andale Mono, monospace;
+            line-height: 1.5;
+            font-size: 13px;
+        }
+        aside {
+            display: block;
+            float: right;
+            width: 390px;
+        }
+        blockquote {
+            border-left:.5em solid #eee;
+            padding: 0 2em;
+            margin-left:0;
+            max-width: 476px;
+        }
+        blockquote  cite {
+            font-size:14px;
+            line-height:20px;
+            color:#bfbfbf;
+        }
+        blockquote cite:before {
+            content: '\2014 \00A0';
+        }
 
-<p>NServe is a nodejs-powered static file server that is created to facilitate local software development. It is not designed for production use. </p>
+        blockquote p {  
+            color: #666;
+            max-width: 460px;
+        }
+        hr {
+            width: 540px;
+            text-align: left;
+            margin: 0 auto 0 0;
+            color: #999;
+        }
 
-<p><img src="https://github.com/marty-wang/NServe/raw/master/screenshots/terminal.png" alt="Terminal Screenshot" title="" /></p>
+        /* Code below this line is copyright Twitter Inc. */
 
-<h1>Features</h1>
+        button,
+        input,
+        select,
+        textarea {
+          font-size: 100%;
+          margin: 0;
+          vertical-align: baseline;
+          *vertical-align: middle;
+        }
+        button, input {
+          line-height: normal;
+          *overflow: visible;
+        }
+        button::-moz-focus-inner, input::-moz-focus-inner {
+          border: 0;
+          padding: 0;
+        }
+        button,
+        input[type="button"],
+        input[type="reset"],
+        input[type="submit"] {
+          cursor: pointer;
+          -webkit-appearance: button;
+        }
+        input[type=checkbox], input[type=radio] {
+          cursor: pointer;
+        }
+        /* override default chrome & firefox settings */
+        input:not([type="image"]), textarea {
+          -webkit-box-sizing: content-box;
+          -moz-box-sizing: content-box;
+          box-sizing: content-box;
+        }
 
-<ul>
-<li>Easy and Fast. One command and serve away.</li>
-<li>Allow user-defined transfer rate to mimck the real situations.</li>
-<li>Delay cross-domain mock web services, including GET and POST. </li>
-<li>More to come...</li>
-</ul>
+        input[type="search"] {
+          -webkit-appearance: textfield;
+          -webkit-box-sizing: content-box;
+          -moz-box-sizing: content-box;
+          box-sizing: content-box;
+        }
+        input[type="search"]::-webkit-search-decoration {
+          -webkit-appearance: none;
+        }
+        label,
+        input,
+        select,
+        textarea {
+          font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+          font-size: 13px;
+          font-weight: normal;
+          line-height: normal;
+          margin-bottom: 18px;
+        }
+        input[type=checkbox], input[type=radio] {
+          cursor: pointer;
+          margin-bottom: 0;
+        }
+        input[type=text],
+        input[type=password],
+        textarea,
+        select {
+          display: inline-block;
+          width: 210px;
+          padding: 4px;
+          font-size: 13px;
+          font-weight: normal;
+          line-height: 18px;
+          height: 18px;
+          color: #808080;
+          border: 1px solid #ccc;
+          -webkit-border-radius: 3px;
+          -moz-border-radius: 3px;
+          border-radius: 3px;
+        }
+        select, input[type=file] {
+          height: 27px;
+          line-height: 27px;
+        }
+        textarea {
+          height: auto;
+        }
 
-<h1>Installation</h1>
+        /* grey out placeholders */
+        :-moz-placeholder {
+          color: #bfbfbf;
+        }
+        ::-webkit-input-placeholder {
+          color: #bfbfbf;
+        }
 
-<pre><code>    npm install nserve -g
-</code></pre>
+        input[type=text],
+        input[type=password],
+        select,
+        textarea {
+          -webkit-transition: border linear 0.2s, box-shadow linear 0.2s;
+          -moz-transition: border linear 0.2s, box-shadow linear 0.2s;
+          transition: border linear 0.2s, box-shadow linear 0.2s;
+          -webkit-box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+          -moz-box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+          box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        input[type=text]:focus, input[type=password]:focus, textarea:focus {
+          outline: none;
+          border-color: rgba(82, 168, 236, 0.8);
+          -webkit-box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1), 0 0 8px rgba(82, 168, 236, 0.6);
+          -moz-box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1), 0 0 8px rgba(82, 168, 236, 0.6);
+          box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1), 0 0 8px rgba(82, 168, 236, 0.6);
+        }
 
-<p>or install the development version from source code</p>
-
-<pre><code>    npm install {source code folder} -g
-</code></pre>
-
-<h1>Usage</h1>
-
-<p>In the folder where you want to serve the files. Run the command below. </p>
-
-<p><strong>nserve</strong> [options]</p>
-
-<p>Options:</p>
-
-<pre><code>    -h, --help                                  output usage information
+        /* buttons */
+        button {
+          display: inline-block;
+          padding: 4px 14px;
+          font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+          font-size: 13px;
+          line-height: 18px;
+          -webkit-border-radius: 4px;
+          -moz-border-radius: 4px;
+          border-radius: 4px;
+          -webkit-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05);
+          -moz-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05);
+          box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05);
+          background-color: #0064cd;
+          background-repeat: repeat-x;
+          background-image: -khtml-gradient(linear, left top, left bottom, from(#049cdb), to(#0064cd));
+          background-image: -moz-linear-gradient(top, #049cdb, #0064cd);
+          background-image: -ms-linear-gradient(top, #049cdb, #0064cd);
+          background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #049cdb), color-stop(100%, #0064cd));
+          background-image: -webkit-linear-gradient(top, #049cdb, #0064cd);
+          background-image: -o-linear-gradient(top, #049cdb, #0064cd);
+          background-image: linear-gradient(top, #049cdb, #0064cd);
+          color: #fff;
+          text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+          border: 1px solid #004b9a;
+          border-bottom-color: #003f81;
+          -webkit-transition: 0.1s linear all;
+          -moz-transition: 0.1s linear all;
+          transition: 0.1s linear all;
+          border-color: #0064cd #0064cd #003f81;
+          border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+        }
+        button:hover {
+          color: #fff;
+          background-position: 0 -15px;
+          text-decoration: none;
+        }
+        button:active {
+          -webkit-box-shadow: inset 0 3px 7px rgba(0, 0, 0, 0.15), 0 1px 2px rgba(0, 0, 0, 0.05);
+          -moz-box-shadow: inset 0 3px 7px rgba(0, 0, 0, 0.15), 0 1px 2px rgba(0, 0, 0, 0.05);
+          box-shadow: inset 0 3px 7px rgba(0, 0, 0, 0.15), 0 1px 2px rgba(0, 0, 0, 0.05);
+        }
+        button::-moz-focus-inner {
+          padding: 0;
+          border: 0;
+        }
+    </style>
+</head>
+<body>
+    <p>NServe is a nodejs-powered static file server that is created to facilitate local software development. It is not designed for production use. </p>  <p><img src="https://github.com/marty-wang/NServe/raw/master/screenshots/terminal.png" alt="Terminal Screenshot"></p>  <h1>Features</h1> <ul><li>Easy and Fast. One command and serve away.</li><li>Allow user-defined transfer rate to mimck the real situations.</li><li>Delay cross-domain mock web services, including GET and POST.</li><li>Live reload HTML/CSS/JS files. No need to manually refersh browsers.</li><li>More to come... </li></ul> <h1>Installation</h1> <pre><code>    npm install nserve -g
+</code></pre> <p>or install the development version from source code</p>  <pre><code>    npm install {source code folder} -g
+</code></pre> <h1>Usage</h1> <p>In the folder where you want to serve the files. Run the command below. </p>  <p><strong>nserve</strong> [options]</p>  <p>Options:</p>  <pre><code>    -h, --help                                  output usage information
     -V, --version                               output the version number
     -p, --port &lt;n&gt;                              specify the port number [3000]
     -r, --rate &lt;bit rate&gt;                       specify the file transfer rate in Bps, e.g. 100K or 5M
     -v, --verbose                               enter verbose mode
     -d, --directory &lt;root&gt;                      specify the root directory, relative or absolute [current directory]
-    -w, --webservice-folder &lt;folder name&gt;       specify the web service folder name ["ws"]
+    -w, --webservice-folder &lt;folder name&gt;       specify the web service folder name [&quot;ws&quot;]
     -D, --webservice-delay &lt;n&gt;                  specify the delay of the web service in millisecond [0]
-</code></pre>
-
-<p>and open <a href="http://localhost:3000">http://localhost:3000</a> in your browser.</p>
-
-<h1>Tips</h1>
-
-<ul>
-<li><p><strong>How to use cross-domain mock web services?</strong></p>
-
-<p>In the command line you have the option to specify the folder name where all the web services data are stored. In the meantime all the http requests that have the URLs starting with this folder name will be considered as web service calls. For example, by default this folder is named as <strong><em>ws</em></strong>, if you have a file called data.json and another called error.json under the same <strong><em>ws</em></strong> folder, the <strong>GET</strong> request of http://localhost:3000/ws/data.json will have data.json returned as the payload for your ajax success callback, and the one of http://localhost:3000/ws/data.json?error=error.json will simulate the error situation and return error.json as payload for your ajax error callback. You can name these files howerever you want. You just need to make sure that the pairing data file and error file should stay under the same folder and the error file should be specified as the value of key <strong><em>error</em></strong> in the query.</p>
-
-<p>In the case of <strong>POST</strong> request, the principle is the same. The only difference is that the data.json file will mean the post result, and the error file should be put into the data body of request, as error=error.json, as opposed to in the query.</p>
-
-<p>For an example, please reference the <a href="https://github.com/marty-wang/NServe/blob/master/samples/ajax.html"><strong>ajax.html</strong></a> in the <strong>samples</strong> folder.</p>
-
-<p>Again, by default it defaults to <strong><em>ws</em></strong> folder for all the web services. But you can change to another folder in the command line with the option <strong>-w</strong> or <strong>--webservice-folder</strong>, and refer to that folder under the root where <strong><em>nserve</em></strong> is running.</p>
-
-<p>Also you have the ability to "slow down" the web services by using th option <strong>-D</strong> or <strong>--webservice-delay</strong>. You want to do that in the situation where you want to test your loader, for example.</p></li>
-</ul>
-
-<h1>License (MIT)</h1>
-
-<p>Copyright (c) 2011 Mo Wang &lt;<a href="&#109;&#x61;&#x69;&#108;&#x74;&#x6F;:&#x6D;&#x6F;&#x2E;&#111;&#x73;&#115;&#46;&#x77;&#x61;&#x6E;&#103;&#64;g&#x6D;&#x61;&#105;&#108;&#x2E;&#99;&#x6F;&#x6D;">&#x6D;&#x6F;&#x2E;&#111;&#x73;&#115;&#46;&#x77;&#x61;&#x6E;&#103;&#64;g&#x6D;&#x61;&#105;&#108;&#x2E;&#99;&#x6F;&#x6D;</a>></p>
-
-<p>Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:</p>
-
-<p>The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.</p>
-
-<p>THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</p>
+    -l, --live-reload                           automatically reload HTML/CSS/JS files
+</code></pre> <p>and open <a href="http://localhost:3000">http://localhost:3000</a> in your browser.</p>  <h1>Tips</h1> <ul><li><strong>How to use cross-domain mock web services?</strong>  In the command line you have the option to specify the folder name where all the web services data are stored. In the meantime all the http requests that have the URLs starting with this folder name will be considered as web service calls. For example, by default this folder is named as <strong><em>ws</em></strong>, if you have a file called data.json and another called error.json under the same <strong><em>ws</em></strong> folder, the <strong>GET</strong> request of http://localhost:3000/ws/data.json will have data.json returned as the payload for your ajax success callback, and the one of http://localhost:3000/ws/data.json?error=error.json will simulate the error situation and return error.json as payload for your ajax error callback. You can name these files howerever you want. You just need to make sure that the pairing data file and error file should stay under the same folder and the error file should be specified as the value of key <strong><em>error</em></strong> in the query.  In the case of <strong>POST</strong> request, the principle is the same. The only difference is that the data.json file will mean the post result, and the error file should be put into the data body of request, as error=error.json, as opposed to in the query.  For an example, please reference the <a href="https://github.com/marty-wang/NServe/blob/master/samples/ajax.html"><strong>ajax.html</strong></a> in the <strong>samples</strong> folder.  Again, by default it defaults to <strong><em>ws</em></strong> folder for all the web services. But you can change to another folder in the command line with the option <strong>-w</strong> or <strong>--webservice-folder</strong>, and refer to that folder under the root where <strong><em>nserve</em></strong> is running.  Also you have the ability to &quot;slow down&quot; the web services by using th option <strong>-D</strong> or <strong>--webservice-delay</strong>. You want to do that in the situation where you want to test your loader, for example. </li></ul> <h1>License (MIT)</h1> <p>Copyright (c) 2011 Mo Wang &lt;<a href="&#109;&#97;&#x69;&#x6c;&#x74;&#111;&#x3a;&#109;&#x6f;&#x2e;&#x6f;&#115;&#115;&#x2e;&#x77;&#x61;&#110;&#103;&#64;&#x67;&#x6d;&#x61;&#x69;&#x6c;&#46;&#99;&#x6f;&#x6d;">&#109;&#x6f;&#x2e;&#x6f;&#115;&#115;&#x2e;&#x77;&#x61;&#110;&#103;&#64;&#x67;&#x6d;&#x61;&#x69;&#x6c;&#46;&#99;&#x6f;&#x6d;</a>&gt;</p>  <p>Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the &quot;Software&quot;), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:</p>  <p>The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.</p>  <p>THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</p>
+</body>
+</html>
