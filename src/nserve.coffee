@@ -72,8 +72,8 @@ _fileTransferCallback  = (data) ->
         when "init"
             _rate = data.payload
         when "start"
+            payload = data.payload
             if _isLiveReload
-                payload = data.payload
                 contentType = payload.contentType
                 if contentType is "text/html"
                     # insert live script here
