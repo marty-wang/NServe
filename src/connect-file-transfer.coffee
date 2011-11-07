@@ -18,7 +18,8 @@ _callback = (status, payload) ->
     } if _fn?
 
 _transfer = (req, res, next, fn) ->
-    path = _root + parse(req.url).pathname
+    pathname = parse(req.url).pathname
+    path = _root + pathname
 
     try
         stat = fs.statSync path
@@ -27,7 +28,7 @@ _transfer = (req, res, next, fn) ->
                 contentType = mime.lookup path
                 _callback "start", {
                     request: req
-                    path: path
+                    path: pathname
                     content: data
                     contentType: contentType
                 }
@@ -50,16 +51,16 @@ _transfer = (req, res, next, fn) ->
                                 res.write result.payload
                             when "complete"
                                 res.end()
-                                _callback "complete", path
+                                _callback "complete", pathname
 
                 else # no transfer limit
                     res.end data
-                    _callback "complete", path
+                    _callback "complete", pathname
             else
                 throw err
 
     catch error
-        _callback "error", path   
+        _callback "error", pathname   
         next()
 
 ### Public ###

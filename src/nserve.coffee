@@ -84,11 +84,11 @@ _fileTransferCallback  = (data) ->
                     req.modifiedDataSize = content.length
 
             if _isVerbose
-                console.log "[".grey + "started#{_now()}".yellow + "]".grey + " #{payload.path}"
+                console.log "[".grey + "started#{_now()}".yellow + "]".grey + " {root}".grey + "#{payload.path}"
         when "complete"
-            console.log "[".grey + "served#{_now()}".green + "]".grey + " #{data.payload}"
+            console.log "[".grey + "served#{_now()}".green + "]".grey + " {root}".grey + "#{data.payload}"
         when "error"
-            console.error "[".grey + "failed#{_now()}".red + "]".grey + " #{data.payload}"
+            console.error "[".grey + "failed#{_now()}".red + "]".grey + " {root}".grey + "#{data.payload}"
 
 _router = ->
     connect.router (app) ->            
