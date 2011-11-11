@@ -52,6 +52,10 @@ and open [http://localhost:3000](http://localhost:3000) in your browser.
 
     Also you have the ability to "slow down" the web services by using th option **-D** or **--webservice-delay**. You want to do that in the situation where you want to test your loader, for example.
 
+# TODO
+
+* Add unit testing and refactor code
+
 # License (MIT)
 
 Copyright (c) 2011 Mo Wang <<mo.oss.wang@gmail.com>>
