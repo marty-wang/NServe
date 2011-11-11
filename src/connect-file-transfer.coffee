@@ -2,8 +2,7 @@ fs = require "fs"
 parse = require("url").parse
 
 mime = require 'mime'
-Futures = require 'futures'
-ffs = require 'futures-fs'
+async = require 'async'
 
 trans = require "./data-transfer"
 
@@ -23,19 +22,16 @@ _transfer = (req, res, next, fn) ->
     pathname = parse(req.url).pathname
     path = _root + pathname
 
-    Futures.sequence()
-        .then (go) ->
-            ffs.stat(path).when (err, stats) ->
+    fileStats = null
+    async.series {
+        one: (callback) ->
+            fs.stat path, (err, stats) ->
+                fileStats = stats          
+                callback err, stats
+        two: (callback) ->
+            fs.readFile path, (err, data) ->
                 if err?
-                    _callback "error", pathname   
-                    next()
-                else
-                    go(stats)
-        .then (go, stats) ->
-            ffs.readFile(path).when (err, data) ->
-                if err?
-                    _callback "error", pathname   
-                    next()
+                    callback err, null
                 else
                     contentType = mime.lookup path
                     _callback "start", {
@@ -45,7 +41,7 @@ _transfer = (req, res, next, fn) ->
                         contentType: contentType
                     }
 
-                    size = stats.size
+                    size = fileStats.size
 
                     if req.modifiedData?
                         data = req.modifiedData
@@ -68,6 +64,13 @@ _transfer = (req, res, next, fn) ->
                     else # no transfer limit
                         res.end data
                         _callback "complete", pathname
+            
+                    callback null, null
+    },
+    (err, results) ->
+        if err?
+            _callback "error", pathname   
+            next()
 
 ### Public ###
 

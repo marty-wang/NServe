@@ -1,3 +1,0 @@
-[submodule "node_modules/futures-fs"]
-	path = node_modules/futures-fs
-	url = git@github.com:marty-wang/futures-fs.git
