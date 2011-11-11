@@ -1,5 +1,5 @@
 {
-  "author": "Mo Wang",
+  "author": "Mo Wang <mo.oss.wang@gmail.com>",
   "name": "nserve",
   "description": "A nodejs-powered static file server for development",
   "keywords": ["static", "file", "web", "server"],
@@ -15,7 +15,8 @@
     "mime": ">=1.2.4",
     "connect": ">=1.7.2",
     "commander": ">=0.3.2",
-    "colors": "*"
+    "colors": "*",
+    "futures": ">=2.1.0"
   },
   "devDependencies": {},
   "bin": {
