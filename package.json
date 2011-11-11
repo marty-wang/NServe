@@ -18,7 +18,12 @@
     "colors": "*",
     "async": ">=0.1.15"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "vows": ">=0.5.13",
+    "sinon": ">=1.2.0",
+    "should": ">=0.3.2",
+    "coffee-script": ">=1.1.3"
+  },
   "bin": {
     "nserve": "./index.js"
   }
