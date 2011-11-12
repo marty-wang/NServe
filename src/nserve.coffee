@@ -1,4 +1,6 @@
 DEFAULT_PORT = 3000
+DEFAULT_ROOT = '.'
+DEFAULT_RATE = 'unlimited'
 DEFAULT_WEBSERVICE_FOLDER = "ws"
 DEFAULT_WEBSERVICE_DELAY = 0
 
@@ -9,9 +11,9 @@ parse = require("url").parse
 path = require "path"
 
 connect = require "connect"
-program = require "commander"
 colors = require "colors"
 
+ncli = require './nserve-cli'
 fileTransfer = (require "./connect-file-transfer").transfer
 webservice = (require "./connect-webservice").webservice
 livepage = require './connect-livepage'
@@ -21,11 +23,11 @@ util = require "./util"
 
 _server = null
 _versionNumber = "x.x.x"
+_root = null
 # options
 _isVerbose = false
 _port = DEFAULT_PORT
 _rate = null
-_root = null
 _webserviceFolder = null
 _webserviceDelay = 0
 _isLiveReload = false
@@ -37,32 +39,26 @@ _version = ->
         console.error error
 
 _parseCLI = ()->
-    program
-        .version(_versionNumber)
-        .option('-p, --port <n>', 'specify the port number [3000]', parseInt)
-        .option('-r, --rate <bit rate>', 'specify the file transfer rate in Bps, e.g. 100K or 5M')
-        .option('-v, --verbose', 'enter verbose mode')
-        .option('-d, --directory <root>', 'specify the root directory, either relative or absolute [current directory]')
-        .option('-w, --webservice-folder <folder name>', 'specify the webservice folder name ["ws"]')
-        .option('-D, --webservice-delay <n>', 'specify the delay of the web service in millisecond [0]', parseInt)
-        .option('-l, --live-reload', 'automatically reload HTML/CSS/JS files')
-        .parse(process.argv)
+    argv = ncli.defaults(
+        port: DEFAULT_PORT
+        root: DEFAULT_ROOT
+        rate: DEFAULT_RATE
+        webserviceFolder: DEFAULT_WEBSERVICE_FOLDER
+        webserviceDelay: DEFAULT_WEBSERVICE_DELAY
+        version: _versionNumber
+    )
+    .argv()
 
-    port = program.port
-    _port = port if port? and not isNaN(port)
-    _isVerbose = !!program.verbose
-    _rate = program.rate
+    _port = argv.port
+    _isVerbose = argv.verbose
+    _rate = argv.rate
 
-    root = util.absoluteDirPath program.directory
+    _webserviceFolder = argv.webserviceFolder
+    _webserviceDelay = argv.webserviceDelay
+    _isLiveReload = argv.liveReload
+
+    root = util.absoluteDirPath argv.root
     _root = if root? then root else process.cwd()
-
-    wsFolder = program.webserviceFolder
-    _webserviceFolder = if wsFolder? then util.normalizeFolderName(wsFolder) else DEFAULT_WEBSERVICE_FOLDER
-
-    wsDelay = program.webserviceDelay
-    _webserviceDelay = if wsDelay? and not isNaN(wsDelay) then wsDelay else DEFAULT_WEBSERVICE_DELAY
-
-    _isLiveReload = !!program.liveReload
 
 _now = ->
     if _isVerbose then " @ #{util.now()}" else ""

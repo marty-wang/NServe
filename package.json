@@ -14,7 +14,7 @@
   "dependencies": {
     "mime": ">=1.2.4",
     "connect": ">=1.7.2",
-    "commander": ">=0.3.2",
+    "nomnom": ">=1.5.1",
     "colors": "*",
     "async": ">=0.1.15"
   },
