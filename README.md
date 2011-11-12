@@ -22,19 +22,19 @@ or install the development version from source code
 
 In the folder where you want to serve the files. Run the command below. 
 
-**nserve** [options]
+**nserve** [root] [options]
 
-Options:
-        
-        -h, --help                                  output usage information
-        -V, --version                               output the version number
-        -p, --port <n>                              specify the port number [3000]
-        -r, --rate <bit rate>                       specify the file transfer rate in Bps, e.g. 100K or 5M
-        -v, --verbose                               enter verbose mode
-        -d, --directory <root>                      specify the root directory, relative or absolute [current directory]
-        -w, --webservice-folder <folder name>       specify the web service folder name ["ws"]
-        -D, --webservice-delay <n>                  specify the delay of the web service in millisecond [0]
-        -l, --live-reload                           automatically reload HTML/CSS/JS files
+root: directory where files are served [current folder]
+
+options:
+
+    --version                                   print out the version number
+    -p PORT, --port PORT                        specify the port number [3000]
+    -r RATE, --rate RATE                        specify the file transfer rate in Bps, e.g. 100K or 5M [unlimited]
+    -W FOLDER, --webservice-folder FOLDER       specify the webservice folder name [ws]
+    -D DELAY, --webservice-delay DELAY          specify the delay of the web service in millisecond [0]
+    -v, --verbose                               enter verbose mode
+    -L, --live-reload                           automatically reload HTML/CSS/JS files
 
 and open [http://localhost:3000](http://localhost:3000) in your browser.
 
