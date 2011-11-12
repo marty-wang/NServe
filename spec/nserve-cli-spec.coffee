@@ -10,89 +10,91 @@ _defaults =
     webserviceFolder: 'ws'
     webserviceDelay: 0
 
+ncli.defaults _defaults
+
 vows.describe('nserve cli')
     .addBatch(
         
         '#parse':
-            topic: ->
-                ncli.defaults _defaults
+
+            'no options and arguments':
+                topic: ->
+                    ncli.parse []
+                
+                'should return default values': (result) ->
+                    result.root.should.eql _defaults.root
+                    result.port.should.equal _defaults.port     
+                    result.rate.should.equal _defaults.rate  
+                    result.webserviceFolder.should.equal _defaults.webserviceFolder
+                    result.webserviceDelay.should.equal _defaults.webserviceDelay
+                    result.verbose.should.be.false   
+                    result.liveReload.should.be.false          
 
             'root':
+                topic: ->
+                    ncli.parse ['foo', 'bar']
 
-                'should be default root if there is not arguments': ->
-                    result = ncli.parse []
-                    result.root.should.equal _defaults.root
+                'should be the first item of arguments array': (result) ->
+                    result.root.should.eql 'foo'
 
-                'should be the first item of arguments array': ->
-                    result = ncli.parse ['foo', 'bar']
-                    result.root.should.equal 'foo'
-
-            'port':
+            '--port or -p':
                 
-                'should be default port if nothing is assigned to --port or -p': ->
-                    result = ncli.parse [];
-                    result.port.should.equal _defaults.port
-
-                'should be default port if invalid value is assigned to --port or -p': ->
-                    result = ncli.parse ['--port', 'InvalidPortValue']
-                    result.port.should.equal _defaults.port
-
-                'should be the same value as assigned to --port or -p': ->
-                    result = ncli.parse ['--port', "4000"]
-                    result.port.should.equal 4000
-
-            'rate':
-
-                'should be default rate if nothing is assigned to --rate or -r': ->
-                    result = ncli.parse []
-                    result.rate.should.equal _defaults.rate
-
-                'should be the same value as assinged to --rate or -rat': ->
-                    result = ncli.parse ['--rate', 'some_rate']
-                    result.rate.should.equal 'some_rate'
-
-            'verbose':
+                "if a integer value is provided":            
+                    topic: ->
+                        ncli.parse ['--port', "4000"]
                 
-                'should be false if not specified': ->
-                    result = ncli.parse []
-                    result.verbose.should.be.false
-                
-                'should be true if specified': ->
-                    result = ncli.parse ['--verbose']
-                    result.verbose.should.be.true
+                    'should equal to the integer value': (result) ->
+                        result.port.should.eql 4000
 
-            'webserviceFolder':
-                
-                'should be default folder if nothing is assigned to --webservice-folder or -W': ->
-                    result = ncli.parse []
-                    result.webserviceFolder.should.equal _defaults.webserviceFolder
+                'if a non-integer value is provided':
+                    topic: ->
+                        ncli.parse ['--port', "invalid_value"]
+                    
+                    'should use default value': (result) ->
+                        result.port.should.eql _defaults.port
 
-                'should be the same as assigned to --webservice-folder or -W': ->
-                    result = ncli.parse ['--webservice-folder', 'folder']
+            '--rate or -r':
+                topic: ->
+                    ncli.parse ['--rate', 'some_rate']
+
+                'should equal to the same value provided': (result) ->
+                    result.rate.should.eql 'some_rate'
+
+            '--webservice-folder or -W':
+                topic: ->
+                    ncli.parse ['--webservice-folder', 'folder']                    
+                
+                'should equal to the value provided': (result) ->
                     result.webserviceFolder.should.equal 'folder'
 
-            'webserviceDelay':
+            '--webservice-delay or -D':
 
-                'should be default delay if nothing is assigned to --webservice-delay or -D': ->
-                    result = ncli.parse []
-                    result.webserviceDelay.should.equal _defaults.webserviceDelay
+                'if a integer value is provided':
+                    topic: ->
+                        ncli.parse ['-D', '15']
+                    
+                    "should equal to the integer value": (result) ->
+                        result.webserviceDelay.should.eql 15
 
-                'should be same as assigned to --webservice-delay or -D': ->
-                    result = ncli.parse ['-D', '15']
-                    result.webserviceDelay.should.equal 15
+                'if a non-iteger value is provided': ->
+                    topic: ->
+                        ncli.parse ['-D', 'invalid_value']
+                    
+                    "should use the default value": (result) ->
+                        result.webserviceDelay.should.eql _defaults.webserviceDelay
 
-                'should be default delay if invalid value assigned to --webservice-delay or -D': ->
-                    result = ncli.parse ['--webservice-delay', 'invalid_delay']
-                    result.webserviceDelay.should.equal _defaults.webserviceDelay
-
-            'livereload':
+            '--verbose or -v':
+                topic: ->
+                    ncli.parse ['--verbose']
                 
-                'should be false if not specified': ->
-                    result = ncli.parse []
-                    result.liveReload.should.be.false
+                'should be true': (result) ->
+                    result.verbose.should.be.true
 
-                'should be true if specified': ->
-                    result = ncli.parse ['-L']
+            '--live-reload or -L':
+                topic: ->
+                    ncli.parse ['--live-reload']
+
+                'should be true': (result) ->
                     result.liveReload.should.be.true
     )
     .export module
