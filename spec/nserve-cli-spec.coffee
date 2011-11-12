@@ -30,7 +30,7 @@ vows.describe('nserve cli')
                     result.verbose.should.be.false   
                     result.liveReload.should.be.false          
 
-            'root':
+            'root argument if provided':
                 topic: ->
                     ncli.parse ['foo', 'bar']
 
@@ -65,7 +65,7 @@ vows.describe('nserve cli')
                     ncli.parse ['--webservice-folder', 'folder']                    
                 
                 'should equal to the value provided': (result) ->
-                    result.webserviceFolder.should.equal 'folder'
+                    result.webserviceFolder.should.eql 'folder'
 
             '--webservice-delay or -D':
 
