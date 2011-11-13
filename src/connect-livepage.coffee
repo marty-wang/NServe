@@ -21,14 +21,9 @@ _types = [
     'application/javascript'
 ]
 
-_isEnabled = false
-
-live = (root, enabled) ->
-    _isEnabled = enabled
+live = (root) ->
 
     (req, res, next) ->
-        return next() unless _isEnabled
-
         switch req.method.toUpperCase()
             when "HEAD"
                 filepath = root + parse(req.url).pathname
@@ -47,7 +42,6 @@ live = (root, enabled) ->
                 next()
 
 insertLiveScript = (content, contentType) ->
-    return content unless _isEnabled
 
     if _liveScript? and contentType is "text/html"
         html = content.toString 'utf8'

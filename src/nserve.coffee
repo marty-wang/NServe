@@ -94,16 +94,16 @@ _router = ->
             next();
         
 _init = () ->
-    connect.createServer(
-        connect.bodyParser(),
-        connect.query(),
-        _router(),
-        livepage.live(_root, _isLiveReload),
-        webservice(_root, _webserviceFolder, _webserviceDelay),
-        connect.favicon(path.resolve __dirname, "../public/favicon.ico"),
-        connect.directory(_root),
-        fileTransfer(_rate, _root, _fileTransferCallback)
-    )
+    _server = connect()
+
+    _server.use connect.favicon(path.resolve __dirname, "../public/favicon.ico")
+    _server.use connect.bodyParser()
+    _server.use connect.query()
+    _server.use _router()
+    _server.use livepage.live(_root) if _isLiveReload
+    _server.use webservice(_root, _webserviceFolder, _webserviceDelay)
+    _server.use connect.directory(_root)
+    _server.use fileTransfer(_rate, _root, _fileTransferCallback)
 
 ### bootstrap ###
 
