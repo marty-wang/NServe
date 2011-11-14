@@ -12,9 +12,9 @@ vows.describe("data transfer")
         'initialized with 5 Bps':
             topic: ->
                 dataTransfer.create '5'
-            '#getRate':
+            '#getActualRate':
                 topic: (transferer) ->
-                    transferer.getRate()
+                    transferer.getActualRate()
                 'rate should equal to 5': (rate) ->
                     rate.should.eql '5'
             '#getBufferLength':
@@ -67,9 +67,9 @@ vows.describe("data transfer")
         'initialized with 100K Bps':
             topic: ->
                 dataTransfer.create '100K'
-            '#getRate':
+            '#getActualRate':
                 topic: (transferer) ->
-                    transferer.getRate()
+                    transferer.getActualRate()
                 'rate should equal to 100K': (rate) ->
                     rate.should.eql '100K'
             '#getBufferLength':
@@ -81,9 +81,9 @@ vows.describe("data transfer")
         'initialized with 5M':
             topic: ->
                 dataTransfer.create '5M Bps'
-            '#getRate':
+            '#getActualRate':
                 topic: (transferer) ->
-                    transferer.getRate()
+                    transferer.getActualRate()
                 'rate should equal to 5M': (rate) ->
                     rate.should.eql '5M'
             '#getBufferLength':
@@ -95,9 +95,9 @@ vows.describe("data transfer")
         'initialized with nothing':
             topic: ->
                 dataTransfer.create()
-            '#getRate':
+            '#getActualRate':
                 topic: (transferer) ->
-                    transferer.getRate()
+                    transferer.getActualRate()
                 'rate should equal to unlimited': (rate) ->
                     rate.should.eql 'unlimited'
             '#getBufferLength':
@@ -122,9 +122,9 @@ vows.describe("data transfer")
         'initialized with invalid value':
             topic: ->
                 dataTransfer.create("invalid_value")
-            '#getRate':
+            '#getActualRate':
                 topic: (transferer) ->
-                    transferer.getRate()
+                    transferer.getActualRate()
                 'rate should equal to unlimited': (rate) ->
                     rate.should.eql 'unlimited'
             '#getBufferLength':

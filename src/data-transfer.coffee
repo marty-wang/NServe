@@ -11,7 +11,7 @@ class Transferer
 
         _parse.call @
     
-    getRate: ->
+    getActualRate: ->
         @_rate
         
     getBufferLength: ->

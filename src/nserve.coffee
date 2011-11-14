@@ -14,6 +14,7 @@ connect = require "connect"
 colors = require "colors"
 
 ncli = require './nserve-cli'
+dataTransfer = require './data-transfer'
 fileTransfer = (require "./connect-file-transfer").transfer
 webservice = (require "./connect-webservice").webservice
 livepage = require './connect-livepage'
@@ -65,8 +66,8 @@ _now = ->
 
 _fileTransferCallback  = (data) ->
     switch data.status
-        when "init"
-            _rate = data.payload
+        # when "init"
+            # _rate = data.payload
         when "start"
             payload = data.payload
             if _isLiveReload
@@ -96,6 +97,9 @@ _router = ->
 _init = () ->
     _server = connect()
 
+    transferer = dataTransfer.create _rate
+    _rate = transferer.getActualRate()
+
     _server.use connect.favicon(path.resolve __dirname, "../public/favicon.ico")
     _server.use connect.bodyParser()
     _server.use connect.query()
@@ -103,7 +107,7 @@ _init = () ->
     _server.use livepage.live(_root) if _isLiveReload
     _server.use webservice(_root, _webserviceFolder, _webserviceDelay)
     _server.use connect.directory(_root)
-    _server.use fileTransfer(_rate, _root, _fileTransferCallback)
+    _server.use fileTransfer(transferer, _root, _fileTransferCallback)
 
 ### bootstrap ###
 
@@ -120,7 +124,7 @@ start = ->
     console.log "file server is running...".green
     console.log "   root ".cyan + "#{_root}"
     console.log "   port ".cyan + "#{_port}"
-    console.log "   rate ".cyan + if _rate? then "#{_rate}(Bps)" else "unlimited"
+    console.log "   rate ".cyan + "#{_rate} (Bps)"
     console.log "   livereload: ".cyan + "#{_isLiveReload}"
     console.log "   webservice folder ".cyan + "#{_webserviceFolder}"
     console.log "   webservice delay ".cyan + "#{_webserviceDelay} ms"
