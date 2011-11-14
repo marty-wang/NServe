@@ -50,11 +50,12 @@ _transfer = (req, res, next) ->
                     }
 
                     _transferer.transfer data, size, (err, result) ->
+                        payload = result.payload
                         switch result.status
                             when "transfer"
-                                res.write result.payload
+                                res.write payload
                             when "complete"
-                                res.end result.payload
+                                res.end payload
                                 _update "complete", pathname
             
                     go null, null
