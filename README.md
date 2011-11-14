@@ -38,6 +38,13 @@ options:
 
 and open [http://localhost:3000](http://localhost:3000) in your browser.
 
+# Running Test
+
+Under the project folder,
+
+    $ npm install
+    $ make spec
+
 #Tips
 
 * **How to use cross-domain mock web services?**

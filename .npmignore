@@ -1,6 +1,9 @@
+src/
+spec/
 samples/
 screenshots/
 
 .gitignore
 .npmignore
 Guardfile
+Makefile
