@@ -66,8 +66,6 @@ _now = ->
 
 _fileTransferCallback  = (data) ->
     switch data.status
-        # when "init"
-            # _rate = data.payload
         when "start"
             payload = data.payload
             if _isLiveReload
