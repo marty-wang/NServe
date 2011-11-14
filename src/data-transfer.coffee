@@ -1,60 +1,67 @@
-DEFAULT_RATE = "500K" # 500KBps (bytes per second)
-DEFAULT_SPEAD = 512000
+rateRegEx = /^((\d+\.\d+)|(\d+))([mkMK]?)/
 
-### Private ###
+# Notes: the consumer of the class should decide if it should
+# limit the minimal rate. However it is not Transferer's responsibility.
 
-_speed = DEFAULT_SPEAD
-_bufLen = _speed
-_rate = DEFAULT_RATE
+class Transferer
 
-_transfer = (data, size, offset, bufLength, fn) ->
-        
-    bufLength = Math.min bufLength, size-offset
-    chunk = data.slice offset, offset+bufLength
-    offset += chunk.length
-    fn.call null, {
-        status: "transfer"
-        payload: chunk
-    } if fn?
+    constructor: (rate) ->
+        @_rate = rate
+        @_bufLen = null
 
-    if offset >= size
-        return fn.call null, {
-            status: "complete"
-        } if fn?
-
-    setTimeout (->
-        _transfer data, size, offset, bufLength, fn
-    ), 1000
-
-### Public ###
-
-transferRateRegEx = /^((\d+\.\d+)|(\d+))([mkMK]?)/g
-
-parseRate = (transferRate) ->
-    tr = transferRateRegEx.exec transferRate
-    if tr?
-        _speed = tr[1]
-        unit = tr[4].toUpperCase()
-        _rate = "#{_speed}#{unit}"
-
-        switch unit
-            when 'K' then _speed *= 1024
-            when 'M' then _speed *= 1024*1024
-        
-        # TODO: set to default speed if the specified speed is too small
-        _bufLen = _speed
-        _speed = Math.round _speed
+        _parse.call @
     
-    _rate
+    getRate: ->
+        @_rate
+        
+    getBufferLength: ->
+        @_bufLen
 
-getRate = ->
-    _rate
+    transfer: (data, size, callback) ->
+        if @_bufLen <= 0
+            callback null, {
+                status: 'complete'
+                payload: data
+            }
+        else
+            _transfer data, size, 0, @_bufLen, callback
+    
+    ### Private ###
+    _parse = ()->
+        tr = rateRegEx.exec @_rate
 
-# size is in byte, the transfer rate is in bps as bit per second
-# 1 byte = 8 bits
-transferData = (data, size, fn) ->
-    _transfer data, size, 0, _bufLen, fn
+        if tr?
+            @_bufLen = tr[1]
+            unit = tr[4].toUpperCase()
+            @_rate = "#{@_bufLen}#{unit}"
 
-exports.parseRate = parseRate
-exports.getRate = getRate
-exports.transferData = transferData
+            switch unit
+                when 'K' then @_bufLen *= 1024
+                when 'M' then @_bufLen *= 1024*1024
+            
+            @_bufLen = Math.round @_bufLen  
+        else
+            @_rate = 'unlimited'
+            @_bufLen = 0
+    
+    _transfer = (data, size, offset, bufLength, cb) -> 
+        bufLength = Math.min bufLength, size-offset
+        chunk = data.slice offset, offset+bufLength
+        offset += chunk.length
+        cb null, {
+            status: "transfer"
+            payload: chunk
+        } if cb?
+
+        if offset >= size
+            return cb null, {
+                status: "complete"
+                payload: null
+            } if cb?
+
+        setTimeout (->
+            _transfer data, size, offset, bufLength, cb
+        ), 1000                        
+
+exports.create = (rate) ->
+    new Transferer rate

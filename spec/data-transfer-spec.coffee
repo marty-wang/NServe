@@ -2,10 +2,10 @@ should = require 'should'
 vows = require 'vows'
 sinon = require 'sinon'
 
-dataTransfer = require '../lib/1-data-transfer'
+dataTransfer = require '../lib/data-transfer'
 
-testData = "This is a test!!!" # 17 byts
-testDataSize = testData.length
+testData = "This is a test!!!"
+testDataSize = testData.length # 17 byts
 
 vows.describe("data transfer")
     .addBatch(
