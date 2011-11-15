@@ -15,7 +15,8 @@ colors = require "colors"
 
 ncli = require './nserve-cli'
 dataTransfer = require './data-transfer'
-fileTransfer = (require "./connect-file-transfer").transfer
+fileTransfer = require './file-transfer'
+connectFileTransfer = (require "./connect-file-transfer").transfer
 webservice = (require "./connect-webservice").webservice
 livepage = require './connect-livepage'
 util = require "./util"
@@ -84,10 +85,6 @@ _router = ->
         
 _init = () ->
     _server = connect()
-
-    transferer = dataTransfer.create _rate
-    _rate = transferer.getActualRate()
-
     hooks = []
 
     _server.use connect.favicon(path.resolve __dirname, "../public/favicon.ico")
@@ -106,7 +103,15 @@ _init = () ->
 
     _server.use webservice(_root, _webserviceFolder, _webserviceDelay)
     _server.use connect.directory(_root)
-    _server.use fileTransfer(transferer, _root, _fileTransferCallback, hooks)
+
+    dataTransferer = dataTransfer.create _rate
+    _rate = dataTransferer.getActualRate()
+
+    fileTransferer = fileTransfer.create dataTransferer, hooks
+    _server.use connectFileTransfer(fileTransferer, _root, _fileTransferCallback)
+
+    _server
+
 
 ### bootstrap ###
 

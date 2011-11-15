@@ -1,57 +1,6 @@
 fs = require "fs"
 parse = require("url").parse
 
-mime = require 'mime'
-
-fsUtil = require './fs-util'
-
-class FileTransferer
-
-    # hooks have the ability to change the data
-    # before it gets transfered
-    constructor: (dataTransferer, hooks=[]) ->
-        @_transferer = dataTransferer
-        @_hooks = hooks
-
-    transfer: (filepath, callback) ->
-        fsUtil.readStatsAndFile filepath, (err, payload) =>
-            if err?
-                callback new Error(), null
-            else
-                data = payload.data
-                size = payload.stats.size
-                contentType = mime.lookup filepath
-
-                dataObj = 
-                    data: data
-                    size: size
-                for hook in @_hooks
-                    hook contentType, dataObj
-
-                data = dataObj.data
-                size = dataObj.size
-
-                callback null, {
-                    status: 'start'
-                    contentType: contentType    
-                }
-
-                @_transferer.transfer data, size, (err, result) ->
-                    chunk = result.payload
-                    switch result.status
-                        when "transfer"
-                            callback null, {
-                                status: 'transfer'
-                                content: chunk
-                            }
-                        when "complete"
-                            callback null, {
-                                status: 'complete'
-                                content: chunk
-                            }
-
-#------------------------------------------------------------------------------
-
 ### Private ###
 
 _root = null
@@ -90,11 +39,10 @@ _transfer = (req, res, next) ->
 
 ### Public ###
 
-transfer = (dataTransferer, root, callback, hooks=[]) ->
+transfer = (fileTransferer, root, callback) ->
     _root = root
     _callback = callback
-
-    _fileTransferer = new FileTransferer dataTransferer, hooks
+    _fileTransferer = fileTransferer
     
     (req, res, next) ->
         switch req.method.toUpperCase()
