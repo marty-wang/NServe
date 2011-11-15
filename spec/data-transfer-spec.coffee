@@ -9,20 +9,20 @@ testDataSize = testData.length # 17 byts
 
 vows.describe("data transfer")
     .addBatch(
-        'initialized with 5 Bps':
+        'a transferer with rate of 5 Bps':
             topic: ->
                 dataTransfer.create '5'
-            '#getActualRate':
+            '*getActualRate*':
                 topic: (transferer) ->
                     transferer.getActualRate()
                 'rate should equal to 5': (rate) ->
                     rate.should.eql '5'
-            '#getBufferLength':
+            '*getBufferLength*':
                 topic: (tranferer) ->
                     tranferer.getBufferLength()
                 'bufferLength should equal to 5': (bufferLength) ->
                     bufferLength.should.eql 5
-            '#transfer':
+            '*transfer*':
                 topic: (transferer) ->
                     clock = sinon.useFakeTimers()
                     ticks = Math.ceil(testDataSize/5) + 1
@@ -64,48 +64,48 @@ vows.describe("data transfer")
                         payload: null
                     }).should.be.true                    
 
-        'initialized with 100K Bps':
+        'a transferer with rate of 100K Bps':
             topic: ->
                 dataTransfer.create '100K'
-            '#getActualRate':
+            '*getActualRate*':
                 topic: (transferer) ->
                     transferer.getActualRate()
                 'rate should equal to 100K': (rate) ->
                     rate.should.eql '100K'
-            '#getBufferLength':
+            '*getBufferLength*':
                 topic: (tranferer) ->
                     tranferer.getBufferLength()
                 'bufferLength should equal to 100x1024': (bufferLength) ->
                     bufferLength.should.eql 100*1024
         
-        'initialized with 5M':
+        'a transferer with rate of 5M':
             topic: ->
                 dataTransfer.create '5M Bps'
-            '#getActualRate':
+            '*getActualRate*':
                 topic: (transferer) ->
                     transferer.getActualRate()
                 'rate should equal to 5M': (rate) ->
                     rate.should.eql '5M'
-            '#getBufferLength':
+            '*getBufferLength*':
                 topic: (tranferer) ->
                     tranferer.getBufferLength()
                 'bufferLength should equal to 5x1024x1024': (bufferLength) ->
                     bufferLength.should.eql 5*1024*1024
         
-        'initialized with nothing':
+        'a transferer with rate of undefined':
             topic: ->
                 dataTransfer.create()
-            '#getActualRate':
+            '*getActualRate*':
                 topic: (transferer) ->
                     transferer.getActualRate()
                 'rate should equal to unlimited': (rate) ->
                     rate.should.eql 'unlimited'
-            '#getBufferLength':
+            '*getBufferLength*':
                 topic: (tranferer) ->
                     tranferer.getBufferLength()
                 'bufferLength should equal to 0': (bufferLength) ->
                     bufferLength.should.eql 0
-            '#transfer':
+            '*transfer*':
                 topic: (transferer) ->
                     callback = sinon.spy()
                     transferer.transfer testData, testDataSize, callback
@@ -119,15 +119,15 @@ vows.describe("data transfer")
                         payload: testData
                     }).should.be.true                   
                     
-        'initialized with invalid value':
+        'a transferer with rate of invalid value':
             topic: ->
                 dataTransfer.create("invalid_value")
-            '#getActualRate':
+            '*getActualRate*':
                 topic: (transferer) ->
                     transferer.getActualRate()
                 'rate should equal to unlimited': (rate) ->
                     rate.should.eql 'unlimited'
-            '#getBufferLength':
+            '*getBufferLength*':
                 topic: (tranferer) ->
                     tranferer.getBufferLength()
                 'bufferLength should equal to 0': (bufferLength) ->

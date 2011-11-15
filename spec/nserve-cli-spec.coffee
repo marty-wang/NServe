@@ -15,7 +15,7 @@ ncli.defaults _defaults
 vows.describe('nserve cli')
     .addBatch(
         
-        '#parse':
+        '*parse*':
 
             'no options and arguments':
                 topic: ->

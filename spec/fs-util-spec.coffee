@@ -17,7 +17,7 @@ testError = new Error()
 
 vows.describe('fs-util')
     .addBatch(
-        '#readStatsAndFile':
+        '*readStatsAndFile*':
             'if no error, should callback once with no error and an object containing data and stats': ->
                 callback = sinon.spy()
                 statStub = sinon
