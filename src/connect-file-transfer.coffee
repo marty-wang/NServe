@@ -4,73 +4,100 @@ parse = require("url").parse
 mime = require 'mime'
 async = require 'async'
 
+fileDeliver = require './file-deliver'
+
+class FileTransferer
+
+    constructor: (fileDeliverer, dataTransferer, hooks=[]) ->
+        @_deliverer = fileDeliverer
+        @_transferer = dataTransferer
+        @_hooks = hooks
+
+    transfer: (filepath, callback) ->
+        @_deliverer.deliver filepath, (err, payload) =>
+            if err?
+                callback new Error(), null
+            else
+                data = payload.data
+                size = payload.size
+                contentType = mime.lookup filepath
+
+                # hooks have the ability to change the data
+                # before it gets transfered
+                dataObj = 
+                    data: data
+                    size: size
+                for hook in @_hooks
+                    hook contentType, dataObj
+
+                data = dataObj.data
+                size = dataObj.size
+
+                callback null, {
+                    status: 'start'
+                    contentType: contentType    
+                }
+
+                @_transferer.transfer data, size, (err, result) ->
+                    chunk = result.payload
+                    switch result.status
+                        when "transfer"
+                            callback null, {
+                                status: 'transfer'
+                                content: chunk
+                            }
+                        when "complete"
+                            callback null, {
+                                status: 'complete'
+                                content: chunk
+                            }
+
+#------------------------------------------------------------------------------
+
 ### Private ###
 
-_transferer = null
 _root = null
 _callback = null
+_fileTransferer = null
 
-_update = (status, payload) ->
-    _callback.call null, {
-        status: status
-        payload: payload
-    } if _callback?
+_cb = (error, payload) ->
+    _callback error, payload if _callback?
 
 _transfer = (req, res, next) ->
     pathname = parse(req.url).pathname
-    path = _root + pathname
+    filepath = _root + pathname
 
-    fileStats = null
-    async.series {
-        one: (go) ->
-            fs.stat path, (err, stats) ->
-                fileStats = stats          
-                go err, stats
-        two: (go) ->
-            fs.readFile path, (err, data) ->
-                if err?
-                    go err, null
-                else
-                    contentType = mime.lookup path
-                    _update "start", {
-                        request: req
-                        path: pathname
-                        content: data
-                        contentType: contentType
-                    }
-
-                    size = fileStats.size
-
-                    if req.modifiedData?
-                        data = req.modifiedData
-                        size = req.modifiedDataSize
-
-                    res.writeHead 200, {
-                        'Content-Type': contentType
-                    }
-
-                    _transferer.transfer data, size, (err, result) ->
-                        payload = result.payload
-                        switch result.status
-                            when "transfer"
-                                res.write payload
-                            when "complete"
-                                res.end payload
-                                _update "complete", pathname
-            
-                    go null, null
-    },
-    (err, results) ->
+    _fileTransferer.transfer filepath, (err, payload) ->
         if err?
-            _update "error", pathname   
+            _cb err, pathname
             next()
+        else
+            switch payload.status
+                when 'start'
+                    _cb null, {
+                        status: 'start'
+                        pathname: pathname
+                    }
+                    res.writeHead 200, {
+                        'Content-Type': payload.contentType
+                    }
+                when 'transfer'
+                    res.write payload.content
+                when 'complete'
+                    res.end payload.content
+                    _cb null,  {
+                        status: "complete"
+                        pathname: pathname
+                    }
 
 ### Public ###
 
-transfer = (transferer, root, callback)->
-    _transferer = transferer
+transfer = (transferer, root, callback, hooks=[])->
     _root = root
     _callback = callback
+
+    deliverer = fileDeliver.create()
+    _fileTransferer = new FileTransferer deliverer, transferer, hooks
     
     (req, res, next) ->
         switch req.method.toUpperCase()

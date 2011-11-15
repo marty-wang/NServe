@@ -64,26 +64,16 @@ _parseCLI = ()->
 _now = ->
     if _isVerbose then " @ #{util.now()}" else ""
 
-_fileTransferCallback  = (data) ->
+_fileTransferCallback  = (error, data) ->
+    if error?
+        return console.error "[".grey + "failed#{_now()}".red + "]".grey + " {root}".grey + "#{data}"
+    
     switch data.status
         when "start"
-            payload = data.payload
-            if _isLiveReload
-                contentType = payload.contentType
-                if contentType is "text/html"
-                    # insert live script here
-                    req = payload.request
-                    content = payload.content
-                    content = livepage.insertLiveScript content, contentType
-                    req.modifiedData = content
-                    req.modifiedDataSize = content.length
-
             if _isVerbose
-                console.log "[".grey + "started#{_now()}".yellow + "]".grey + " {root}".grey + "#{payload.path}"
+                console.log "[".grey + "started#{_now()}".yellow + "]".grey + " {root}".grey + "#{data.pathname}"
         when "complete"
-            console.log "[".grey + "served#{_now()}".green + "]".grey + " {root}".grey + "#{data.payload}"
-        when "error"
-            console.error "[".grey + "failed#{_now()}".red + "]".grey + " {root}".grey + "#{data.payload}"
+            console.log "[".grey + "served#{_now()}".green + "]".grey + " {root}".grey + "#{data.pathname}"            
 
 _router = ->
     connect.router (app) ->            
@@ -98,14 +88,25 @@ _init = () ->
     transferer = dataTransfer.create _rate
     _rate = transferer.getActualRate()
 
+    hooks = []
+
     _server.use connect.favicon(path.resolve __dirname, "../public/favicon.ico")
     _server.use connect.bodyParser()
     _server.use connect.query()
     _server.use _router()
-    _server.use livepage.live(_root) if _isLiveReload
+
+    if _isLiveReload
+        _server.use livepage.live(_root)
+        hooks.push (contentType, dataObj) ->
+            if contentType is "text/html"
+                # insert live script here
+                content = livepage.insertLiveScript dataObj.data, contentType
+                dataObj.data = content
+                dataObj.size = content.length
+
     _server.use webservice(_root, _webserviceFolder, _webserviceDelay)
     _server.use connect.directory(_root)
-    _server.use fileTransfer(transferer, _root, _fileTransferCallback)
+    _server.use fileTransfer(transferer, _root, _fileTransferCallback, hooks)
 
 ### bootstrap ###
 

@@ -39,7 +39,7 @@ vows.describe('file deliver')
                     statStub.restore()
                     readFileStub.restore()
                         
-                'if stat error, should callback once with error and null data and should not read file': (deliverer) ->
+                'if stat error, should callback once with error and null data': (deliverer) ->
                     callback = sinon.spy()
                     statStub = sinon
                         .stub(fs, 'stat')
@@ -51,9 +51,26 @@ vows.describe('file deliver')
 
                     callback.callCount.should.eql 1
                     callback.calledWithExactly(testError, null).should.be.true
-                    readFileStub.callCount.should.eql 0
 
                     statStub.restore()
                     readFileStub.restore()
+
+                'if readfile error, should callback once with error and null data': (deliverer) ->
+                    callback = sinon.spy()
+                    statStub = sinon
+                        .stub(fs, 'stat')
+                        .callsArgWith 1, null, {}
+                    readFileStub = sinon
+                        .stub(fs, 'readFile')
+                        .callsArgWith 1, testError, null 
+                    
+                    deliverer.deliver testPath, callback
+
+                    callback.callCount.should.eql 1
+                    callback.calledWithExactly(testError, null).should.be.true
+
+                    statStub.restore()
+                    readFileStub.restore()
+
     )
     .export module
