@@ -4,22 +4,21 @@ parse = require("url").parse
 mime = require 'mime'
 async = require 'async'
 
-fileDeliver = require './file-deliver'
+fsUtil = require './fs-util'
 
 class FileTransferer
 
-    constructor: (fileDeliverer, dataTransferer, hooks=[]) ->
-        @_deliverer = fileDeliverer
+    constructor: (dataTransferer, hooks=[]) ->
         @_transferer = dataTransferer
         @_hooks = hooks
 
     transfer: (filepath, callback) ->
-        @_deliverer.deliver filepath, (err, payload) =>
+        fsUtil.readStatsAndFile filepath, (err, payload) =>
             if err?
                 callback new Error(), null
             else
                 data = payload.data
-                size = payload.size
+                size = payload.stats.size
                 contentType = mime.lookup filepath
 
                 # hooks have the ability to change the data
@@ -96,8 +95,7 @@ transfer = (transferer, root, callback, hooks=[])->
     _root = root
     _callback = callback
 
-    deliverer = fileDeliver.create()
-    _fileTransferer = new FileTransferer deliverer, transferer, hooks
+    _fileTransferer = new FileTransferer transferer, hooks
     
     (req, res, next) ->
         switch req.method.toUpperCase()
