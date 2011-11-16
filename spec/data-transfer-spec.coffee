@@ -31,7 +31,7 @@ vows.describe("data transfer")
                     clock.tick(ticks*1000+100)
                     clock.restore()
                     callback
-                "callback should be called 5 times with no error and data": (callback) ->
+                "callback should be called n times with no error and data": (callback) ->
                     callback.callCount.should.eql 5
                     
                     call0 = callback.getCall 0
