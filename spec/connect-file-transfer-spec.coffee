@@ -4,8 +4,9 @@ sinon = require 'sinon'
 
 connectFileTransfer = require '../lib/connect-file-transfer'
 
-testRoot = "testRoot"
-testUrl = "testUrl"
+testRoot = "/testRoot"
+testUrl = "http://testUrl/path/name"
+testFilePath = '/testRoot/path/name'
 testError = new Error()
     
 testResponse =
@@ -23,6 +24,27 @@ vows.describe('connect-file-transfer')
                 callback = sinon.spy()
                 cTransfer = connectFileTransfer.transfer fileTransferer, testRoot, callback
                 cTransfer.should.be.a 'function'
+            
+            'should transfer file based on request url and root': ->
+                fileTransferer = {
+                    transfer: ->
+                }
+
+                fileTransferSpy = sinon.spy fileTransferer, 'transfer'
+
+                callback = sinon.spy()
+                cTransfer = connectFileTransfer.transfer fileTransferer, testRoot, callback
+
+                req =
+                    method: 'GET'
+                    url: testUrl
+
+                cTransfer req, testResponse, callback
+
+                fileTransferSpy.calledOnce.should.be.true
+                fileTransferSpy.getCall(0).args[0].should.eql testFilePath
+
+                fileTransferSpy.restore()
             
             'for GET request':
                 'if there is error, it should callback once and afterwards call next': ->
