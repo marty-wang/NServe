@@ -1,3 +1,5 @@
+[![Build Status](https://secure.travis-ci.org/marty-wang/NServe.png)](http://travis-ci.org/marty-wang/NServe)
+
 NServe is a nodejs-powered static file server that is created to facilitate local software development. It is not designed for production use. 
 
 ![Terminal Screenshot](https://github.com/marty-wang/NServe/raw/master/screenshots/terminal.png)
