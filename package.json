@@ -26,5 +26,8 @@
   },
   "bin": {
     "nserve": "./index.js"
+  },
+  "scripts": {
+    "test": "make spec"
   }
 }
