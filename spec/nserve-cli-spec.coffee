@@ -10,91 +10,85 @@ _defaults =
     webserviceFolder: 'ws'
     webserviceDelay: 0
 
-ncli.defaults _defaults
-
 vows.describe('nserve cli')
     .addBatch(
-        
         '*parse*':
-
             'no options and arguments':
                 topic: ->
-                    ncli.parse []
+                    ncli.parse ['node', 'test'], _defaults
                 
-                'should return default values': (result) ->
-                    result.root.should.eql _defaults.root
-                    result.port.should.equal _defaults.port     
-                    result.rate.should.equal _defaults.rate  
-                    result.webserviceFolder.should.equal _defaults.webserviceFolder
-                    result.webserviceDelay.should.equal _defaults.webserviceDelay
-                    result.verbose.should.be.false   
-                    result.liveReload.should.be.false          
+                'should return default values': (parser) ->
+                    parser.root().should.eql _defaults.root
+                    parser.option('port').should.eql _defaults.port
+                    parser.option('rate').should.eql _defaults.rate  
+                    parser.option('webserviceFolder').should.eql _defaults.webserviceFolder
+                    parser.option('webserviceDelay').should.eql _defaults.webserviceDelay
+                    parser.option('verbose').should.be.false
+                    parser.option('liveReload').should.be.false
 
             'root argument if provided':
                 topic: ->
-                    ncli.parse ['foo', 'bar']
+                    ncli.parse ['node', 'test', 'foo', 'bar'], _defaults
 
-                'should be the first item of arguments array': (result) ->
-                    result.root.should.eql 'foo'
+                'should be the first item of arguments array': (parser) ->
+                    parser.root().should.eql 'foo'
 
             '--port or -p':
-                
                 "if a integer value is provided":            
                     topic: ->
-                        ncli.parse ['--port', "4000"]
+                        ncli.parse ['node', 'tet', '--port', "4000"],  _defaults
                 
-                    'should equal to the integer value': (result) ->
-                        result.port.should.eql 4000
+                    'should equal to the integer value': (parser) ->
+                        parser.option('port').should.eql 4000
 
                 'if a non-integer value is provided':
                     topic: ->
-                        ncli.parse ['--port', "invalid_value"]
+                        ncli.parse ['node', 'test', '--port', "invalid_value"], _defaults
                     
-                    'should use default value': (result) ->
-                        result.port.should.eql _defaults.port
+                    'should be NaN': (parser) ->
+                        isNaN(parser.option('port')).should.be.true
 
             '--rate or -r':
                 topic: ->
-                    ncli.parse ['--rate', 'some_rate']
+                    ncli.parse ['node', 'test', '--rate', 'some_rate'], _defaults
 
-                'should equal to the same value provided': (result) ->
-                    result.rate.should.eql 'some_rate'
+                'should equal to the same value provided': (parser) ->
+                    parser.option('rate').should.eql 'some_rate'
 
             '--webservice-folder or -W':
                 topic: ->
-                    ncli.parse ['--webservice-folder', 'folder']                    
+                    ncli.parse ['node', 'test', '--webservice-folder', 'folder'], _defaults
                 
-                'should equal to the value provided': (result) ->
-                    result.webserviceFolder.should.eql 'folder'
+                'should equal to the value provided': (parser) ->
+                    parser.option('webserviceFolder').should.eql 'folder'
 
             '--webservice-delay or -D':
-
                 'if a integer value is provided':
                     topic: ->
-                        ncli.parse ['-D', '15']
+                        ncli.parse ['node', 'test', '-D', '15'], _defaults
                     
-                    "should equal to the integer value": (result) ->
-                        result.webserviceDelay.should.eql 15
+                    "should equal to the integer value": (parser) ->
+                        parser.option('webserviceDelay').should.eql 15
 
-                'if a non-iteger value is provided': ->
+                'if a non-iteger value is provided':
                     topic: ->
-                        ncli.parse ['-D', 'invalid_value']
-                    
-                    "should use the default value": (result) ->
-                        result.webserviceDelay.should.eql _defaults.webserviceDelay
+                        ncli.parse ['node', 'test', '-D', 'invalid_value'], _defaults
+    
+                    "should be NaN": (parser) ->
+                        isNaN(parser.option('webserviceDelay')).should.be.true
 
             '--verbose or -v':
                 topic: ->
-                    ncli.parse ['--verbose']
+                    ncli.parse ['node', 'test', '--verbose'], _defaults
                 
-                'should be true': (result) ->
-                    result.verbose.should.be.true
+                'should be true': (parser) ->
+                    parser.option('verbose').should.be.true
 
             '--live-reload or -L':
                 topic: ->
-                    ncli.parse ['--live-reload']
+                    ncli.parse ['node', 'test', '--live-reload'], _defaults
 
-                'should be true': (result) ->
-                    result.liveReload.should.be.true
+                'should be true': (parser) ->
+                    parser.option('liveReload').should.be.true
     )
     .export module

@@ -3,6 +3,8 @@ DEFAULT_ROOT = '.'
 DEFAULT_RATE = 'unlimited'
 DEFAULT_WEBSERVICE_FOLDER = "ws"
 DEFAULT_WEBSERVICE_DELAY = 0
+DEFAULT_VERBOSE = false
+DEFAULT_LIVE_RELOAD = false
 
 sys = require "sys"
 fs = require "fs"
@@ -41,25 +43,31 @@ _version = ->
         console.error error
 
 _parseCLI = ()->
-    argv = ncli.defaults(
+    argv = ncli.parse process.argv, {
         port: DEFAULT_PORT
         root: DEFAULT_ROOT
         rate: DEFAULT_RATE
         webserviceFolder: DEFAULT_WEBSERVICE_FOLDER
         webserviceDelay: DEFAULT_WEBSERVICE_DELAY
+        verbose: DEFAULT_VERBOSE
+        liveReload: DEFAULT_LIVE_RELOAD
         version: _versionNumber
-    )
-    .argv()
+    }
 
-    _port = argv.port
-    _isVerbose = argv.verbose
-    _rate = argv.rate
+    _isVerbose = argv.option 'verbose'
+    _rate = argv.option 'rate'
+    _isLiveReload = argv.option 'liveReload'
+    _webserviceFolder = argv.option 'webserviceFolder'
 
-    _webserviceFolder = argv.webserviceFolder
-    _webserviceDelay = argv.webserviceDelay
-    _isLiveReload = argv.liveReload
+    _port = argv.option 'port'
+    if isNaN(_port)
+        throw "port must be an integer value"
 
-    root = util.absoluteDirPath argv.root
+    _webserviceDelay = argv.option 'webserviceDelay'
+    if isNaN(_webserviceDelay)
+        throw "webservice delay must be an integer value"
+
+    root = util.absoluteDirPath argv.root()
     _root = if root? then root else process.cwd()
 
 _now = ->
@@ -129,10 +137,10 @@ start = ->
     console.log "   root ".cyan + "#{_root}"
     console.log "   port ".cyan + "#{_port}"
     console.log "   rate ".cyan + "#{_rate} (Bps)"
-    console.log "   livereload: ".cyan + "#{_isLiveReload}"
     console.log "   webservice folder ".cyan + "#{_webserviceFolder}"
     console.log "   webservice delay ".cyan + "#{_webserviceDelay} ms"
-    console.log "   mode ".cyan + "verbose" if _isVerbose
+    console.log "   livereload: ".cyan + "#{_isLiveReload}"
+    console.log "   verbose: ".cyan + "#{_isVerbose}"
     console.log "------------------------------------------"
 
 exports.start = start

@@ -14,9 +14,9 @@
   "dependencies": {
     "mime": ">=1.2.4",
     "connect": ">=1.7.3",
-    "nomnom": ">=1.5.1",
     "colors": "*",
-    "async": ">=0.1.15"
+    "async": ">=0.1.15",
+    "commander": ">=0.4.1"
   },
   "devDependencies": {
     "vows": ">=0.5.13",

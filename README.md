@@ -14,29 +14,28 @@ NServe is a nodejs-powered static file server that is created to facilitate loca
 
 # Installation
 
-        npm install nserve -g
+    npm install nserve -g
 
 or install the development version from source code
 
-        npm install {source code folder} -g
+    npm install {source code folder} -g
 
 # Usage
 
 In the folder where you want to serve the files. Run the command below. 
 
-**nserve** [root] [options]
+Usage: **nserve** [options] [root]
 
-root: directory where files are served [current folder]
+  Options:
 
-options:
-
-    --version                                   print out the version number
-    -p PORT, --port PORT                        specify the port number [3000]
-    -r RATE, --rate RATE                        specify the file transfer rate in Bps, e.g. 100K or 5M [unlimited]
-    -W FOLDER, --webservice-folder FOLDER       specify the webservice folder name [ws]
-    -D DELAY, --webservice-delay DELAY          specify the delay of the web service in millisecond [0]
-    -v, --verbose                               enter verbose mode
-    -L, --live-reload                           automatically reload HTML/CSS/JS files
+    -V, --version                     output the version number
+    -h, --help                        output usage information
+    -p, --port <number>               specify the port number [3000]
+    -r, --rate <string>               specify the file transfer rate in Bps, e.g. 100K or 5M [unlimited]
+    -W, --webservice-folder <string>  specify the webservice folder name [ws]
+    -D, --webservice-delay <number>   specify the delay of the web service in millisecond [0]
+    -v, --verbose                     user the verbose mode
+    -L, --live-reload                 automatically reload HTML/CSS/JS files
 
 and open [http://localhost:3000](http://localhost:3000) in your browser.
 
