@@ -3,8 +3,6 @@ DEFAULT_ROOT = '.'
 DEFAULT_RATE = 'unlimited'
 DEFAULT_WEBSERVICE_FOLDER = "ws"
 DEFAULT_WEBSERVICE_DELAY = 0
-DEFAULT_VERBOSE = false
-DEFAULT_LIVE_RELOAD = false
 
 sys = require "sys"
 fs = require "fs"
@@ -49,8 +47,6 @@ _parseCLI = ()->
         rate: DEFAULT_RATE
         webserviceFolder: DEFAULT_WEBSERVICE_FOLDER
         webserviceDelay: DEFAULT_WEBSERVICE_DELAY
-        verbose: DEFAULT_VERBOSE
-        liveReload: DEFAULT_LIVE_RELOAD
         version: _versionNumber
     }
 
