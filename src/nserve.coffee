@@ -1,7 +1,6 @@
 DEFAULT_PORT = 3000
 DEFAULT_ROOT = '.'
 DEFAULT_RATE = 'unlimited'
-DEFAULT_WEBSERVICE_FOLDER = "ws"
 DEFAULT_WEBSERVICE_DELAY = 0
 
 sys = require "sys"
@@ -17,7 +16,7 @@ ncli = require './nserve-cli'
 dataTransfer = require './data-transfer'
 fileTransfer = require './file-transfer'
 connectFileTransfer = (require "./connect-file-transfer").transfer
-webservice = (require "./connect-webservice").webservice
+webservice = require "./connect-webservice"
 livepage = require './connect-livepage'
 util = require "./util"
 
@@ -45,7 +44,6 @@ _parseCLI = ()->
         port: DEFAULT_PORT
         root: DEFAULT_ROOT
         rate: DEFAULT_RATE
-        webserviceFolder: DEFAULT_WEBSERVICE_FOLDER
         webserviceDelay: DEFAULT_WEBSERVICE_DELAY
         version: _versionNumber
     }
@@ -53,18 +51,18 @@ _parseCLI = ()->
     _isVerbose = argv.option 'verbose'
     _rate = argv.option 'rate'
     _isLiveReload = argv.option 'liveReload'
-    _webserviceFolder = argv.option 'webserviceFolder'
 
     _port = argv.option 'port'
     if isNaN(_port)
         throw "port must be an integer value"
 
+    root = util.absoluteDirPath argv.root()
+    _root = if root? then root else process.cwd()
+
+    _webserviceFolder = argv.option 'webserviceFolder'
     _webserviceDelay = argv.option 'webserviceDelay'
     if isNaN(_webserviceDelay)
         throw "webservice delay must be an integer value"
-
-    root = util.absoluteDirPath argv.root()
-    _root = if root? then root else process.cwd()
 
 _now = ->
     if _isVerbose then " @ #{util.now()}" else ""
@@ -86,6 +84,17 @@ _router = ->
         app.get '/', (req, res, next) ->
             req.url += "index.html"
             next();
+
+        if _webserviceFolder?
+            webservice = webservice.create _root, _webserviceDelay
+
+            app.get "/#{_webserviceFolder}/:file", (req, res, next) ->
+                errorFile = req.query['error']
+                webservice.respond req, res, errorFile
+
+            app.post "/#{_webserviceFolder}/:file", (req, res, next) ->
+                errorFile = req.body['error']
+                webservice.respond req, res, errorFile
         
 _init = () ->
     _server = connect()
@@ -105,7 +114,6 @@ _init = () ->
                 dataObj.data = content
                 dataObj.size = content.length
 
-    _server.use webservice(_root, _webserviceFolder, _webserviceDelay)
     _server.use connect.directory(_root)
 
     dataTransferer = dataTransfer.create _rate
@@ -130,11 +138,14 @@ start = ->
 
     console.log "------------------------------------------"
     console.log "file server is running...".green
-    console.log "   root ".cyan + "#{_root}"
-    console.log "   port ".cyan + "#{_port}"
-    console.log "   rate ".cyan + "#{_rate} (Bps)"
-    console.log "   webservice folder ".cyan + "#{_webserviceFolder}"
-    console.log "   webservice delay ".cyan + "#{_webserviceDelay} ms"
+    console.log "   root: ".cyan + "#{_root}"
+    console.log "   port: ".cyan + "#{_port}"
+    console.log "   rate: ".cyan + "#{_rate} (Bps)"
+    if _webserviceFolder?
+        console.log "   webservice folder: ".cyan + "#{_webserviceFolder}"
+        console.log "   webservice delay: ".cyan + "#{_webserviceDelay} ms"
+    else
+        console.log "   webservice: ".cyan + "false"
     console.log "   livereload: ".cyan + "#{_isLiveReload}"
     console.log "   verbose: ".cyan + "#{_isVerbose}"
     console.log "------------------------------------------"

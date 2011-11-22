@@ -7,7 +7,6 @@ _defaults =
     port: 3000
     root: '.'
     rate: 'unlimited'
-    webserviceFolder: 'ws'
     webserviceDelay: 0
 
 vows.describe('nserve cli')
@@ -21,7 +20,7 @@ vows.describe('nserve cli')
                     parser.root().should.eql _defaults.root
                     parser.option('port').should.eql _defaults.port
                     parser.option('rate').should.eql _defaults.rate  
-                    parser.option('webserviceFolder').should.eql _defaults.webserviceFolder
+                    should.not.exist parser.option('webserviceFolder')
                     parser.option('webserviceDelay').should.eql _defaults.webserviceDelay
                     parser.option('verbose').should.be.false
                     parser.option('liveReload').should.be.false
