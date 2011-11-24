@@ -3,7 +3,6 @@ DEFAULT_ROOT = '.'
 DEFAULT_RATE = 'unlimited'
 DEFAULT_WEBSERVICE_DELAY = 0
 
-sys = require "sys"
 fs = require "fs"
 http = require "http"
 parse = require("url").parse

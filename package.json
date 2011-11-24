@@ -3,13 +3,13 @@
   "name": "nserve",
   "description": "A nodejs-powered static file server for development",
   "keywords": ["static", "file", "web", "server"],
-  "version": "0.0.6",
+  "version": "0.0.7",
   "repository": {
     "type": "git",
     "url": "https://github.com/marty-wang/NServe"
   },
   "engines": {
-    "node": "~0.4.12"
+    "node": ">= 0.4.x < 0.7.0"
   },
   "dependencies": {
     "mime": ">=1.2.4",
