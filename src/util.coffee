@@ -28,11 +28,6 @@ absoluteDirPath = (pathStr) ->
 
     absDir
 
-normalizeFolderName = (folder) ->
-    regEx = /\\|\//g
-    folder.replace regEx, ''
-    
-
 now = ->
     now = new Date()
     nowStr = now.toTimeString()
@@ -46,6 +41,5 @@ strSplice = (string, idx, remove, subStr) ->
 
 exports.getVersionNumber = getVersionNumber
 exports.absoluteDirPath = absoluteDirPath
-exports.normalizeFolderName = normalizeFolderName
 exports.now = now
 exports.strSplice = strSplice

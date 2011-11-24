@@ -40,5 +40,22 @@ class WebService
                 }
                 res.end JSON.stringify retData
 
-exports.create = (root, delay) ->
-    new WebService root, delay
+exports.webservice = (root, wsFolder, delay) ->
+    pattern = "^/#{wsFolder}/"
+    regEx = new RegExp pattern
+    ws = new WebService root, delay
+
+    (req, res, next) ->
+        url = req.url
+        if regEx.test url
+            switch req.method
+                when 'GET'
+                    errorFile = req.query['error']
+                    ws.respond req, res, errorFile
+                when 'POST'
+                    errorFile = req.body['error']
+                    ws.respond req, res, errorFile
+                else
+                    next()
+        else
+            next()

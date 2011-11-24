@@ -16,7 +16,7 @@ ncli = require './nserve-cli'
 dataTransfer = require './data-transfer'
 fileTransfer = require './file-transfer'
 connectFileTransfer = (require "./connect-file-transfer").transfer
-webservice = require "./connect-webservice"
+webservice = (require "./connect-webservice").webservice
 livepage = require './connect-livepage'
 util = require "./util"
 
@@ -80,21 +80,9 @@ _fileTransferCallback  = (error, data) ->
 
 _router = ->
     connect.router (app) ->            
-
         app.get '/', (req, res, next) ->
             req.url += "index.html"
             next();
-
-        if _webserviceFolder?
-            webservice = webservice.create _root, _webserviceDelay
-
-            app.get "/#{_webserviceFolder}/:file", (req, res, next) ->
-                errorFile = req.query['error']
-                webservice.respond req, res, errorFile
-
-            app.post "/#{_webserviceFolder}/:file", (req, res, next) ->
-                errorFile = req.body['error']
-                webservice.respond req, res, errorFile
         
 _init = () ->
     _server = connect()
@@ -115,6 +103,10 @@ _init = () ->
                 dataObj.size = content.length
 
     _server.use connect.directory(_root)
+
+    # only enable web service when web service folder is specified.
+    if _webserviceFolder?
+        _server.use webservice(_root, _webserviceFolder, _webserviceDelay)
 
     dataTransferer = dataTransfer.create _rate
     _rate = dataTransferer.getActualRate()
@@ -142,10 +134,10 @@ start = ->
     console.log "   port: ".cyan + "#{_port}"
     console.log "   rate: ".cyan + "#{_rate} (Bps)"
     if _webserviceFolder?
-        console.log "   webservice folder: ".cyan + "#{_webserviceFolder}"
-        console.log "   webservice delay: ".cyan + "#{_webserviceDelay} ms"
+        console.log "   web service folder: ".cyan + "#{_webserviceFolder}"
+        console.log "   web service delay: ".cyan + "#{_webserviceDelay} ms"
     else
-        console.log "   webservice: ".cyan + "false"
+        console.log "   web service: ".cyan + "false"
     console.log "   livereload: ".cyan + "#{_isLiveReload}"
     console.log "   verbose: ".cyan + "#{_isVerbose}"
     console.log "------------------------------------------"
