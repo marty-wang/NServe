@@ -25,14 +25,14 @@ vows.describe("data transfer")
             '*transfer*':
                 topic: (transferer) ->
                     clock = sinon.useFakeTimers()
-                    ticks = Math.ceil(testDataSize/5) + 1
+                    ticks = Math.ceil(testDataSize/5)
                     callback = sinon.spy()
                     transferer.transfer testData, testDataSize, callback
                     clock.tick(ticks*1000+100)
                     clock.restore()
                     callback
                 "callback should be called n times with no error and data": (callback) ->
-                    callback.callCount.should.eql 5
+                    callback.callCount.should.eql 4
                     
                     call0 = callback.getCall 0
                     call0.calledWithExactly(null, {
@@ -54,14 +54,8 @@ vows.describe("data transfer")
 
                     call3 = callback.getCall 3
                     call3.calledWithExactly(null, {
-                        status: 'transfer'
-                        payload: '!!'
-                    }).should.be.true
-                    
-                    call4 = callback.getCall 4
-                    call4.calledWithExactly(null, {
                         status: 'complete'
-                        payload: null
+                        payload: '!!'
                     }).should.be.true                    
 
         'a transferer with rate of 100K Bps':

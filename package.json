@@ -22,7 +22,8 @@
     "vows": ">=0.5.13",
     "sinon": ">=1.2.0",
     "should": ">=0.3.2",
-    "coffee-script": ">=1.1.3"
+    "coffee-script": ">=1.1.3",
+    "mocha": ">=0.0.4"
   },
   "bin": {
     "nserve": "./index.js"

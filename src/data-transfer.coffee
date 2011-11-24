@@ -19,7 +19,7 @@ class Transferer
 
     transfer: (data, size, callback) ->
         if @_bufLen <= 0
-            callback null, {
+            _callback callback, null, {
                 status: 'complete'
                 payload: data
             }
@@ -48,20 +48,21 @@ class Transferer
         bufLength = Math.min bufLength, size-offset
         chunk = data.slice offset, offset+bufLength
         offset += chunk.length
-        cb null, {
-            status: "transfer"
+        status = if offset >= size then 'complete' else 'transfer'
+        _callback cb, null, {
+            status: status
             payload: chunk
-        } if cb?
-
-        if offset >= size
-            return cb null, {
-                status: "complete"
-                payload: null
-            } if cb?
+        }
+        return if offset >= size
 
         setTimeout (->
             _transfer data, size, offset, bufLength, cb
-        ), 1000                        
+        ), 1000
+        
+    _callback = (callback, err, payload) ->
+        process.nextTick(->
+            callback err, payload
+        ) if callback?
 
 exports.create = (rate) ->
     new Transferer rate

@@ -1,4 +1,8 @@
 spec:
-	@./node_modules/.bin/vows
+	@./node_modules/.bin/vows spec/*.coffee
 
-.PHONY: spec
+test:
+	@./node_modules/.bin/mocha \
+		--reporter dot
+
+.PHONY: spec test
