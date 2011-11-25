@@ -13,7 +13,7 @@ class FileTransferer
     transfer: (filepath, callback) ->
         fsUtil.readStatsAndFile filepath, (err, payload) =>
             if err?
-                callback err, null
+                _callback callback, err, null
             else
                 data = payload.data
                 size = payload.stats.size
@@ -28,7 +28,7 @@ class FileTransferer
                 data = dataObj.data
                 size = dataObj.size
 
-                callback null, {
+                _callback callback, null, {
                     status: 'start'
                     contentType: contentType    
                 }
@@ -36,15 +36,20 @@ class FileTransferer
                 @_transferer.transfer data, size, (err, result) ->
                     switch result.status
                         when "transfer"
-                            callback null, {
+                            _callback callback, null, {
                                 status: 'transfer'
                                 content: result.payload
                             }
                         when "complete"
-                            callback null, {
+                            _callback callback, null, {
                                 status: 'complete'
                                 content: result.payload
                             }
+        
+    _callback = (callback, err, data) ->
+        process.nextTick(->
+            callback err, data
+        ) if callback?
 
 exports.create = (dataTransferer, hooks=[]) ->
     new FileTransferer dataTransferer, hooks
