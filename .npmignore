@@ -1,10 +1,10 @@
 src/
-spec/
+test/
 samples/
 screenshots/
 
 .gitignore
 .npmignore
+.travis.yml
 Guardfile
 Makefile
-.travis.yml
