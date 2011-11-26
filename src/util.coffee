@@ -16,13 +16,13 @@ getVersionNumber = ->
     return absolute directory path or null if it is not valid
 ###
 absoluteDirPath = (pathStr) ->
-    return process.cwd() unless pathStr?
+    return null unless pathStr?
 
     pathStr = path.resolve pathStr
 
     try
         stats = fs.statSync pathStr
-        absDir = pathStr if stats.isDirectory()
+        absDir = if stats.isDirectory() then pathStr else null
     catch error
         absDir = null
 
