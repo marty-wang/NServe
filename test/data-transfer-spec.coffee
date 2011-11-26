@@ -45,13 +45,13 @@ describe 'data-transfer', ->
         describe 'if the transferer has unlimited rate', ->
             it 'should call back once with no error and complete data', (done) ->
                 transferer = dataTransfer.create()
-                                
+
                 transferer.transfer testData, testDataSize, (err, data) ->
                     should.not.exist err
                     data.status.should.eql 'complete'
                     data.payload.should.eql testData
-                    done() 
-                
+                    done()
+
         describe 'if the transferer has limited rate', ->
             it 'shuld call back n times with no error and chunk data', (done) ->
                 transferer = dataTransfer.create 5
@@ -74,19 +74,19 @@ describe 'data-transfer', ->
                         call0.calledWithExactly(null, {
                             status: 'transfer'
                             payload: 'This '
-                        }).should.be.true                    
-                
+                        }).should.be.true
+
                         call1 = callback.getCall 1
                         call1.calledWithExactly(null, {
                             status: 'transfer'
                             payload: 'is a '
-                        }).should.be.true                    
+                        }).should.be.true
 
                         call2 = callback.getCall 2
                         call2.calledWithExactly(null, {
                             status: 'transfer'
                             payload: 'test!'
-                        }).should.be.true                    
+                        }).should.be.true
 
                         call3 = callback.getCall 3
                         call3.calledWithExactly(null, {
@@ -98,5 +98,3 @@ describe 'data-transfer', ->
 
                 clock.tick(ticks*1000+100)
                 clock.restore()
-                
-                                                                                        

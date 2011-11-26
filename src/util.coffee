@@ -36,7 +36,7 @@ now = ->
 
 strSplice = (string, idx, remove, subStr) ->
     string.slice(0,idx) + subStr + string.slice(idx + Math.abs(remove))
-    
+
 ### exports ###
 
 exports.getVersionNumber = getVersionNumber

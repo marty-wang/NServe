@@ -39,7 +39,7 @@ describe 'fs-util', ->
 
             statStub.restore()
             readFileStub.restore()
-        
+
         it 'should call back with no error and data containing the stats object literal and data', (done) ->
             statStub = sinon
                 .stub(fs, 'stat')
@@ -47,7 +47,7 @@ describe 'fs-util', ->
             readFileStub = sinon
                 .stub(fs, 'readFile')
                 .callsArgWith(1, null, testData)
-            
+
             fsUtil.readStatsAndFile testFilePath, (err, data) ->
                 done()
                 should.not.exist err
@@ -55,7 +55,6 @@ describe 'fs-util', ->
                     stats: testStats
                     data: testData
                 }
-                
+
             statStub.restore()
             readFileStub.restore()
-                            

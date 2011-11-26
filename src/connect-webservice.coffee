@@ -26,7 +26,7 @@ class WebService
                 pathname = path.resolve pathname, "../#{errorFile}"
                 _readFile.call @, req, res, pathname, 404
         ), @_delay
-        
+
     _readFile = (req, res, path, statusCode) ->
         fs.readFile @_root+path, (err, data) ->
             unless err?

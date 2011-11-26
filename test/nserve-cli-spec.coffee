@@ -3,7 +3,7 @@ should = require 'should'
 ncli = require '../lib/nserve-cli'
 
 describe 'nserve-cli', ->
-    defaults = 
+    defaults =
         port: 3000
         root: '.'
         rate: 'unlimited'
@@ -35,7 +35,7 @@ describe 'nserve-cli', ->
         it 'should return the web service folder if it is specified', ->
             parser = ncli.parse ['node', 'test', '-W', 'somefolder'], defaults
             parser.option('webserviceFolder').should.eql 'somefolder'
-            
+
     describe '#option webserviceDelay', ->
         it 'should return default delay if no delay is specified', ->
             parser = ncli.parse ['node', 'test'], defaults
@@ -45,8 +45,8 @@ describe 'nserve-cli', ->
             parser.option('webserviceDelay').should.eql 1000
         it 'should return NaN if delay is specified and it is not an integer value', ->
             parser = ncli.parse ['node', 'test', '-D', 'somedelay'], defaults
-            isNaN(parser.option('webserviceDelay')).should.be.true      
-            
+            isNaN(parser.option('webserviceDelay')).should.be.true
+
     describe '#option verbose', ->
         it 'should return false if verbose is not specified', ->
             parser = ncli.parse ['node', 'test'], defaults
@@ -54,7 +54,7 @@ describe 'nserve-cli', ->
         it 'should return true if verbose is specified', ->
             parser = ncli.parse ['node', 'test', '-v'], defaults
             parser.option('verbose').should.be.true
-            
+
     describe '#option liveReload', ->
         it 'should return false if liveReload is not specified', ->
             parser = ncli.parse ['node', 'test'], defaults
@@ -62,7 +62,7 @@ describe 'nserve-cli', ->
         it 'should return true if liveReload is specified', ->
             parser = ncli.parse ['node', 'test', '-L'], defaults
             parser.option('liveReload').should.be.true
-            
+
     describe '#root', ->
         it 'should return default root if root is not specified', ->
             parser = ncli.parse ['node', 'test'], defaults
@@ -70,4 +70,3 @@ describe 'nserve-cli', ->
         it 'should return the root if it is specified', ->
             parser = ncli.parse ['node', 'test', 'someroot', 'etc'], defaults
             parser.root().should.eql 'someroot'
-            

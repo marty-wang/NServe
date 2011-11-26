@@ -31,7 +31,7 @@ _rate = null
 _webserviceFolder = null
 _webserviceDelay = 0
 _isLiveReload = false
-  
+
 _version = ->
     try
         _versionNumber = util.getVersionNumber()
@@ -69,20 +69,20 @@ _now = ->
 _fileTransferCallback  = (error, data) ->
     if error?
         return console.error "[".grey + "failed#{_now()}".red + "]".grey + " {root}".grey + "#{data}"
-    
+
     switch data.status
         when "start"
             if _isVerbose
                 console.log "[".grey + "started#{_now()}".yellow + "]".grey + " {root}".grey + "#{data.pathname}"
         when "complete"
-            console.log "[".grey + "served#{_now()}".green + "]".grey + " {root}".grey + "#{data.pathname}"            
+            console.log "[".grey + "served#{_now()}".green + "]".grey + " {root}".grey + "#{data.pathname}"
 
 _router = ->
-    connect.router (app) ->            
+    connect.router (app) ->
         app.get '/', (req, res, next) ->
             req.url += "index.html"
             next();
-        
+
 _init = () ->
     _server = connect()
     hooks = []

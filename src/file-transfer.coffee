@@ -19,7 +19,7 @@ class FileTransferer
                 size = payload.stats.size
                 contentType = mime.lookup filepath
 
-                dataObj = 
+                dataObj =
                     data: data
                     size: size
                 for hook in @_hooks
@@ -30,7 +30,7 @@ class FileTransferer
 
                 _callback callback, null, {
                     status: 'start'
-                    contentType: contentType    
+                    contentType: contentType
                 }
 
                 @_transferer.transfer data, size, (err, result) ->
@@ -45,7 +45,7 @@ class FileTransferer
                                 status: 'complete'
                                 content: result.payload
                             }
-        
+
     _callback = (callback, err, data) ->
         process.nextTick(->
             callback err, data

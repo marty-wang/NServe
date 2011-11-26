@@ -10,10 +10,10 @@ class Transferer
         @_bufLen = null
 
         _parse.call @
-    
+
     getActualRate: ->
         @_rate
-        
+
     getBufferLength: ->
         @_bufLen
 
@@ -25,7 +25,7 @@ class Transferer
             }
         else
             _transfer data, size, 0, @_bufLen, callback
-    
+
     ### Private ###
     _parse = ()->
         tr = rateRegEx.exec @_rate
@@ -38,13 +38,13 @@ class Transferer
             switch unit
                 when 'K' then @_bufLen *= 1024
                 when 'M' then @_bufLen *= 1024*1024
-            
-            @_bufLen = Math.round @_bufLen  
+
+            @_bufLen = Math.round @_bufLen
         else
             @_rate = 'unlimited'
             @_bufLen = 0
-    
-    _transfer = (data, size, offset, bufLength, cb) -> 
+
+    _transfer = (data, size, offset, bufLength, cb) ->
         bufLength = Math.min bufLength, size-offset
         chunk = data.slice offset, offset+bufLength
         offset += chunk.length
@@ -58,7 +58,7 @@ class Transferer
         setTimeout (->
             _transfer data, size, offset, bufLength, cb
         ), 1000
-        
+
     _callback = (callback, err, payload) ->
         process.nextTick(->
             callback err, payload

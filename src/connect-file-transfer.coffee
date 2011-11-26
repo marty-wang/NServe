@@ -46,7 +46,7 @@ transfer = (fileTransferer, root, callback) ->
     _root = root
     _callback = callback
     _fileTransferer = fileTransferer
-    
+
     (req, res, next) ->
         switch req.method.toUpperCase()
             when "GET", "POST"

@@ -12,20 +12,20 @@ describe 'file-transfer', ->
         testData = "test data"
         testDataSize = testData.length
 
-        describe 'if it fails to read file', ->        
+        describe 'if it fails to read file', ->
             it 'should call back with error and null data object', (done) ->
                 fileTransferer = fileTransfer.create null
                 readStatsAndFileStub = sinon
                     .stub(fsUtil, 'readStatsAndFile')
                     .callsArgWith(1, testError, null)
-                
+
                 fileTransferer.transfer testFilePath, (err, data) ->
                     done()
                     err.should.eql testError
                     should.not.exist data
-                
+
                 readStatsAndFileStub.restore()
-            
+
         describe 'if it succeeds to read file', ->
             readStatsAndFileStub = null
             dataTransferer = null
@@ -39,17 +39,17 @@ describe 'file-transfer', ->
                             size: testDataSize
                     })
 
-                dataTransferer = 
+                dataTransferer =
                     transfer: (data, size, callback) ->
                         callback null, {
                             status: 'complete'
                             payload: data
                         }
-            
+
             afterEach ->
                 readStatsAndFileStub.restore()
 
-            it 'should call back with "start" status before transfer', (done)->                
+            it 'should call back with "start" status before transfer', (done)->
                 callback = sinon.spy()
 
                 fileTransferer = fileTransfer.create dataTransferer
@@ -70,22 +70,22 @@ describe 'file-transfer', ->
             describe 'and if the file transferer have 0 hooks', ->
                 it 'should call back with the data sent by data transfer', (done) ->
                     callback = sinon.spy()
-                    
+
                     fileTransferer = fileTransfer.create dataTransferer
 
                     fileTransferer.transfer testFilePath, (err, data) ->
                         callback err, data
                         if data.status is 'complete'
                             done()
-                        
+
                             callback.callCount.should.eql 2
 
                             call1 = callback.getCall 1
                             call1.calledWith(null, {
                                 status: 'complete'
                                 content: testData
-                            }).should.be.true                                    
-        
+                            }).should.be.true
+
             describe 'and if the file transferer have n hooks', ->
                 it 'should call back with the data sent by data transfer but modified by the hooks', (done) ->
                     hooks = [

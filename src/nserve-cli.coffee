@@ -20,13 +20,13 @@ class Parser
             .option('-v, --verbose', "user the verbose mode")
             .option('-L, --live-reload', "automatically reload HTML/CSS/JS files")
             .parse argv
-        
+
         @_program.verbose = !!@_program.verbose
         @_program.liveReload = !!@_program.liveReload
 
     option: (name) ->
         @_program[name]
-    
+
     root: () ->
         val = @_program.args[0]
         unless val?
