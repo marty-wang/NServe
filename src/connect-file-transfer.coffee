@@ -1,5 +1,6 @@
 fs = require "fs"
 parse = require("url").parse
+path = require 'path'
 
 ### Private ###
 
@@ -8,11 +9,13 @@ _callback = null
 _fileTransferer = null
 
 _cb = (error, payload) ->
-    _callback error, payload if _callback?
+    process.nextTick(->
+        _callback error, payload
+    ) if _callback?
 
 _transfer = (req, res, next) ->
     pathname = parse(req.url).pathname
-    filepath = _root + pathname
+    filepath = path.join _root, pathname
 
     _fileTransferer.transfer filepath, (err, payload) ->
         if err?
