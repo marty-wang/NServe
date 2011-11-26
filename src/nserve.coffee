@@ -14,8 +14,9 @@ colors = require "colors"
 ncli = require './nserve-cli'
 dataTransfer = require './data-transfer'
 fileTransfer = require './file-transfer'
+webservice = require "./webservice"
 connectFileTransfer = (require "./connect-file-transfer").transfer
-webservice = (require "./connect-webservice").webservice
+connectWebService = require "./connect-webservice"
 livepage = require './connect-livepage'
 util = require "./util"
 
@@ -105,7 +106,8 @@ _init = () ->
 
     # only enable web service when web service folder is specified.
     if _webserviceFolder?
-        _server.use webservice(_root, _webserviceFolder, _webserviceDelay)
+        ws = webservice.create _root, _webserviceDelay
+        _server.use connectWebService.connect(ws, _webserviceFolder)
 
     dataTransferer = dataTransfer.create _rate
     _rate = dataTransferer.getActualRate()
@@ -114,7 +116,6 @@ _init = () ->
     _server.use connectFileTransfer(fileTransferer, _root, _fileTransferCallback)
 
     _server
-
 
 ### bootstrap ###
 
