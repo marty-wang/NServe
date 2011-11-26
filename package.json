@@ -19,7 +19,6 @@
     "commander": ">=0.4.1"
   },
   "devDependencies": {
-    "vows": ">=0.5.13",
     "sinon": ">=1.2.0",
     "should": ">=0.3.2",
     "coffee-script": ">=1.1.3",
@@ -29,6 +28,6 @@
     "nserve": "./index.js"
   },
   "scripts": {
-    "test": "make spec"
+    "test": "make test"
   }
 }
