@@ -112,12 +112,3 @@ describe 'util', ->
             should.not.exist retVal
 
             statStub.restore()
-
-    describe '#now', ->
-        it 'should return the time and the timezone of current time', ->
-            clock = sinon.useFakeTimers(1322294951917)
-
-            retVal = util.now()
-            retVal.should.eql '00:09:11 (PST)'
-
-            clock.restore()
