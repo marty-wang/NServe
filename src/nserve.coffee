@@ -15,9 +15,10 @@ ncli = require './nserve-cli'
 dataTransfer = require './data-transfer'
 fileTransfer = require './file-transfer'
 webservice = require "./webservice"
+livepage = require './livepage'
 connectFileTransfer = require "./connect-file-transfer"
 connectWebService = require "./connect-webservice"
-livepage = require './connect-livepage'
+connectLivePage = require './connect-livepage'
 util = require "./util"
 
 ### Private ###
@@ -94,11 +95,13 @@ _init = () ->
     _server.use _router()
 
     if _isLiveReload
-        _server.use livepage.live(_root)
+        _server.use connectLivePage.connect(_root)
+        liveScriptPath = path.resolve(__dirname, "../public/live.js")
+        lg = livepage.create liveScriptPath
         hooks.push (contentType, dataObj) ->
             if contentType is "text/html"
                 # insert live script here
-                content = livepage.insertLiveScript dataObj.data, contentType
+                content = lg.insertLiveScript dataObj.data
                 dataObj.data = content
                 dataObj.size = content.length
 
