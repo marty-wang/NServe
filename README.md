@@ -62,7 +62,7 @@ Under the project folder,
 
 # TODO
 
-* Add unit testing and refactor code (done)
+* ~~Add unit testing and refactor code~~
 
 # License (MIT)
 
