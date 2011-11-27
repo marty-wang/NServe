@@ -1,10 +1,10 @@
 should = require 'should'
 sinon = require 'sinon'
 
-transfer = (require '../lib/connect-file-transfer').transfer
+connectFileTransfer = require '../lib/connect-file-transfer'
 
 describe 'connect-file-transfer', ->
-    describe '#transfer', ->
+    describe '#connect', ->
         testRoot = '/root'
         testPathname = '/path/name'
         testFilepath = testRoot + testPathname
@@ -12,8 +12,8 @@ describe 'connect-file-transfer', ->
         testError = new Error()
 
         it 'should return a function', ->
-            cTransfer = transfer()
-            cTransfer.should.be.a 'function'
+            connect = connectFileTransfer.connect()
+            connect.should.be.a 'function'
 
         it 'should use file transferer to transfer the file if it is GET request', ->
             testReq =
@@ -21,9 +21,9 @@ describe 'connect-file-transfer', ->
                 url: testUrl
             fileTransferer = transfer: ->
             spy = sinon.spy fileTransferer, 'transfer'
-            cTransfer = transfer fileTransferer, testRoot
+            connect = connectFileTransfer.connect fileTransferer, testRoot
 
-            cTransfer testReq
+            connect testReq
 
             spy.calledWith(testFilepath).should.be.true
 
@@ -33,18 +33,18 @@ describe 'connect-file-transfer', ->
                 url: testUrl
             fileTransferer = transfer: ->
             spy = sinon.spy fileTransferer, 'transfer'
-            cTransfer = transfer fileTransferer, testRoot
+            connect = connectFileTransfer.connect fileTransferer, testRoot
 
-            cTransfer testReq
+            connect testReq
 
             spy.calledWith(testFilepath).should.be.true
 
         it 'should call next if it is other request', ->
             testReq = method: 'otherMethod'
-            cTransfer = transfer()
+            connect = connectFileTransfer.connect()
             nextSpy = sinon.spy()
 
-            cTransfer testReq, null, nextSpy
+            connect testReq, null, nextSpy
 
             nextSpy.calledOnce.should.be.true
 
@@ -59,12 +59,12 @@ describe 'connect-file-transfer', ->
                         callback testError
                 nextSpy = sinon.spy()
 
-                cTransfer = transfer fileTransferer, testRoot, (err, data) ->
+                connect = connectFileTransfer.connect fileTransferer, testRoot, (err, data) ->
                         done()
                         err.should.eql testError
                         nextSpy.calledOnce.should.be.true
 
-                cTransfer testReq, null, nextSpy
+                connect testReq, null, nextSpy
 
         describe 'if file transferer succeeds to transfer file', ->
             testContent = 'test content'
@@ -81,13 +81,13 @@ describe 'connect-file-transfer', ->
                 testRes = writeHead: ->
                 writeHeadStub = sinon.stub(testRes, 'writeHead')
 
-                cTransfer = transfer fileTransferer, testRoot, (err, data) ->
+                connect = connectFileTransfer.connect fileTransferer, testRoot, (err, data) ->
                     done()
                     should.not.exist err
                     data.should.have.property 'status', 'start'
                     writeHeadStub.calledWith(200).should.be.true
 
-                cTransfer testReq, testRes
+                connect testReq, testRes
 
             it 'should call response to write content sent by file transferer when it transfers', () ->
                 fileTransferer =
@@ -100,8 +100,8 @@ describe 'connect-file-transfer', ->
                 testRes = write: ->
                 writeStub = sinon.stub(testRes, 'write')
 
-                cTransfer = transfer fileTransferer, testRoot
-                cTransfer testReq, testRes
+                connect = connectFileTransfer.connect fileTransferer, testRoot
+                connect testReq, testRes
 
                 writeStub.calledWith(testContent).should.be.true
 
@@ -116,10 +116,10 @@ describe 'connect-file-transfer', ->
                 testRes = end: ->
                 endStub = sinon.stub(testRes, 'end')
 
-                cTransfer = transfer fileTransferer, testRoot, (err, data) ->
+                connect = connectFileTransfer.connect fileTransferer, testRoot, (err, data) ->
                     done()
                     should.not.exist err
                     data.should.have.property 'status', 'complete'
                     endStub.calledWith(testContent).should.be.true
 
-                cTransfer testReq, testRes
+                connect testReq, testRes

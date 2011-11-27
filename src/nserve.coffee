@@ -15,7 +15,7 @@ ncli = require './nserve-cli'
 dataTransfer = require './data-transfer'
 fileTransfer = require './file-transfer'
 webservice = require "./webservice"
-connectFileTransfer = (require "./connect-file-transfer").transfer
+connectFileTransfer = require "./connect-file-transfer"
 connectWebService = require "./connect-webservice"
 livepage = require './connect-livepage'
 util = require "./util"
@@ -113,7 +113,7 @@ _init = () ->
     _rate = dataTransferer.getActualRate()
 
     fileTransferer = fileTransfer.create dataTransferer, hooks
-    _server.use connectFileTransfer(fileTransferer, _root, _fileTransferCallback)
+    _server.use connectFileTransfer.connect(fileTransferer, _root, _fileTransferCallback)
 
     _server
 

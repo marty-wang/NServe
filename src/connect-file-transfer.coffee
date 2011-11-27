@@ -42,7 +42,7 @@ _transfer = (req, res, next) ->
 
 ### Public ###
 
-transfer = (fileTransferer, root, callback) ->
+exports.connect = (fileTransferer, root, callback) ->
     _root = root
     _callback = callback
     _fileTransferer = fileTransferer
@@ -53,5 +53,3 @@ transfer = (fileTransferer, root, callback) ->
                 _transfer req, res, next
             else
                 next()
-
-exports.transfer = transfer
