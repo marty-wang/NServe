@@ -129,6 +129,8 @@ _server = _init()
 ### Public ###
 
 start = ->
+    process.title = 'nserve'
+    
     _server.listen _port
 
     console.log "------------------------------------------"
