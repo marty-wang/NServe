@@ -25,7 +25,7 @@
     "mocha": ">=0.0.8"
   },
   "bin": {
-    "nserve": "./index.js"
+    "nserve": "./bin/nserve"
   },
   "scripts": {
     "test": "make test"
