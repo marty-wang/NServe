@@ -9,9 +9,9 @@ Version: 0.0.8
 # Features
 
 * Easy and Fast. One command and serve away.
-* Allow user-defined transfer rate to mimck the real situations.
+* Allow user-defined transfer rate to mimic the real situations.
 * Delay cross-domain mock web services, including GET and POST.
-* Live reload HTML/CSS/JS files. No need to manually refersh browsers.
+* Live reload HTML/CSS/JS files. No need to manually refresh browsers.
 * More to come...
 
 # Installation
@@ -61,10 +61,6 @@ Under the project folder,
     By default, web service is not enabled. You can enable it by specifying the folder name in the command line with the option **-W** or **--webservice-folder**, and refer to that folder under the root where ***nserve*** is running.
 
     Also you have the ability to "slow down" the web services by using th option **-D** or **--webservice-delay**. You want to do that in the situation where you want to test your loader, for example.
-
-# TODO
-
-* ~~Add unit testing and refactor code~~
 
 # License (MIT)
 
