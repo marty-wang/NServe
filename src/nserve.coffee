@@ -130,7 +130,7 @@ _server = _init()
 
 start = ->
     process.title = 'nserve'
-    
+
     _server.listen _port
 
     console.log "------------------------------------------"
