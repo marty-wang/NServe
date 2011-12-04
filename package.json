@@ -3,7 +3,7 @@
   "name": "nserve",
   "description": "A nodejs-powered development server",
   "keywords": ["static", "file", "web", "server"],
-  "version": "0.0.8",
+  "version": "0.0.9",
   "repository": {
     "type": "git",
     "url": "https://github.com/marty-wang/NServe"

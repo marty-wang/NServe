@@ -2,7 +2,7 @@
 
 NServe is a nodejs-powered development server that is created to facilitate local software development. It is not designed for production use.
 
-Version: 0.0.8
+Version: 0.0.9
 
 ![Terminal Screenshot](https://github.com/marty-wang/NServe/raw/master/screenshots/terminal.png)
 
