@@ -43,58 +43,43 @@ describe 'data-transfer', ->
         testDataSize = testData.length # 17 byts
 
         describe 'if the transferer has unlimited rate', ->
-            it 'should call back once with no error and complete data', (done) ->
+            it 'should emit "complete" event once with complete data', ->
                 transferer = dataTransfer.create()
 
-                transferer.transfer testData, testDataSize, (err, data) ->
-                    should.not.exist err
-                    data.status.should.eql 'complete'
-                    data.payload.should.eql testData
-                    done()
+                transferer.on 'complete', (data) ->
+                    data.should.eql testData
+
+                transferer.transfer testData, testDataSize
 
         describe 'if the transferer has limited rate', ->
-            it 'shuld call back n times with no error and chunk data', (done) ->
+            it 'shuld emit n times "transfer" events and one "complete" event in the end with chunk data', () ->
                 transferer = dataTransfer.create 5
-                clock = sinon.useFakeTimers()
                 ticks = Math.ceil(testDataSize/5)
                 callback = sinon.spy()
-                spy = sinon.spy()
+                clock = sinon.useFakeTimers()
 
-                transferer.transfer testData, testDataSize, (err, data) ->
-                    callback err, data
+                transferer.on 'transfer', (chunk) ->
+                    callback chunk
 
-                    if data.status is 'complete'
-                        done()
+                transferer.on 'complete', (chunk) ->
+                    callback chunk
 
-                        # assertioins
-                        spy.calledBefore(callback).should.be.true
-                        callback.callCount.should.eql ticks
+                transferer.transfer testData, testDataSize
 
-                        call0 = callback.getCall 0
-                        call0.calledWithExactly(null, {
-                            status: 'transfer'
-                            payload: 'This '
-                        }).should.be.true
-
-                        call1 = callback.getCall 1
-                        call1.calledWithExactly(null, {
-                            status: 'transfer'
-                            payload: 'is a '
-                        }).should.be.true
-
-                        call2 = callback.getCall 2
-                        call2.calledWithExactly(null, {
-                            status: 'transfer'
-                            payload: 'test!'
-                        }).should.be.true
-
-                        call3 = callback.getCall 3
-                        call3.calledWithExactly(null, {
-                            status: 'complete'
-                            payload: '!!'
-                        }).should.be.true
-
-                spy()
-
-                clock.tick(ticks*1000+100)
+                clock.tick ticks*1000+100
                 clock.restore()
+
+                # assertions
+                callback.callCount.should.eql ticks
+
+                call0 = callback.getCall 0
+                call0.calledWithExactly('This ').should.be.true
+
+                call1 = callback.getCall 1
+                call1.calledWithExactly('is a ').should.be.true
+
+                call2 = callback.getCall 2
+                call2.calledWithExactly('test!').should.be.true
+
+                call3 = callback.getCall 3
+                call3.calledWithExactly('!!').should.be.true

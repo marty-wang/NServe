@@ -1,9 +1,11 @@
+{EventEmitter} = require 'events'
+
 rateRegEx = /^((\d+\.\d+)|(\d+))([mkMK]?)/
 
 # Notes: the consumer of the class should decide if it should
 # limit the minimal rate. However it is not Transferer's responsibility.
 
-class Transferer
+class Transferer extends EventEmitter
 
     constructor: (rate) ->
         @_rate = rate
@@ -17,14 +19,11 @@ class Transferer
     getBufferLength: ->
         @_bufLen
 
-    transfer: (data, size, callback) ->
+    transfer: (data, size) ->
         if @_bufLen <= 0
-            _callback callback, null, {
-                status: 'complete'
-                payload: data
-            }
+            @.emit 'complete', data
         else
-            _transfer data, size, 0, @_bufLen, callback
+            _transfer.call @, data, size, 0, @_bufLen
 
     ### Private ###
     _parse = ()->
@@ -44,25 +43,18 @@ class Transferer
             @_rate = 'unlimited'
             @_bufLen = 0
 
-    _transfer = (data, size, offset, bufLength, cb) ->
+    _transfer = (data, size, offset, bufLength) ->
         bufLength = Math.min bufLength, size-offset
         chunk = data.slice offset, offset+bufLength
         offset += chunk.length
         status = if offset >= size then 'complete' else 'transfer'
-        _callback cb, null, {
-            status: status
-            payload: chunk
-        }
+        @.emit status, chunk
+
         return if offset >= size
 
-        setTimeout (->
-            _transfer data, size, offset, bufLength, cb
+        setTimeout (=>
+            _transfer.call @, data, size, offset, bufLength
         ), 1000
-
-    _callback = (callback, err, payload) ->
-        process.nextTick(->
-            callback err, payload
-        ) if callback?
 
 exports.create = (rate) ->
     new Transferer rate
