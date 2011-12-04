@@ -1,8 +1,10 @@
+{EventEmitter} = require 'events'
+
 mime = require 'mime'
 
 fsUtil = require './fs-util'
 
-class FileTransferer
+class FileTransferer extends EventEmitter
 
     # hooks have the ability to change the data
     # before it gets transfered
@@ -10,10 +12,18 @@ class FileTransferer
         @_transferer = dataTransferer
         @_hooks = hooks
 
+        return unless dataTransferer?
+
+        dataTransferer.on 'transfer', (chunk) =>
+            @.emit 'transfer', chunk
+
+        dataTransferer.on 'complete', (chunk) =>
+            @.emit 'complete', chunk
+
     transfer: (filepath, callback) ->
         fsUtil.readStatsAndFile filepath, (err, payload) =>
             if err?
-                _callback callback, err, null
+                @.emit 'error', err
             else
                 data = payload.data
                 size = payload.stats.size
@@ -28,28 +38,9 @@ class FileTransferer
                 data = dataObj.data
                 size = dataObj.size
 
-                _callback callback, null, {
-                    status: 'start'
-                    contentType: contentType
-                }
+                @.emit 'start', contentType
 
-                @_transferer.transfer data, size, (err, result) ->
-                    switch result.status
-                        when "transfer"
-                            _callback callback, null, {
-                                status: 'transfer'
-                                content: result.payload
-                            }
-                        when "complete"
-                            _callback callback, null, {
-                                status: 'complete'
-                                content: result.payload
-                            }
-
-    _callback = (callback, err, data) ->
-        process.nextTick(->
-            callback err, data
-        ) if callback?
+                @_transferer.transfer data, size
 
 exports.create = (dataTransferer, hooks=[]) ->
     new FileTransferer dataTransferer, hooks
