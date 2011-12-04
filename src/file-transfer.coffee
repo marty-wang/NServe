@@ -20,7 +20,7 @@ class FileTransferer extends EventEmitter
         dataTransferer.on 'complete', (chunk) =>
             @.emit 'complete', chunk
 
-    transfer: (filepath, callback) ->
+    transfer: (filepath) ->
         fsUtil.readStatsAndFile filepath, (err, payload) =>
             if err?
                 @.emit 'error', err

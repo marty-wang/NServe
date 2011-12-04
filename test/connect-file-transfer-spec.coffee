@@ -1,3 +1,5 @@
+{EventEmitter} = require 'events'
+
 should = require 'should'
 sinon = require 'sinon'
 
@@ -12,14 +14,16 @@ describe 'connect-file-transfer', ->
         testError = new Error()
 
         it 'should return a function', ->
-            connect = connectFileTransfer.connect()
+            fileTransferer = new EventEmitter()
+            connect = connectFileTransfer.connect fileTransferer
             connect.should.be.a 'function'
 
         it 'should use file transferer to transfer the file if it is GET request', ->
             testReq =
                 method: 'GET'
                 url: testUrl
-            fileTransferer = transfer: ->
+            fileTransferer = new EventEmitter()
+            fileTransferer.transfer = ->
             spy = sinon.spy fileTransferer, 'transfer'
             connect = connectFileTransfer.connect fileTransferer, testRoot
 
@@ -31,7 +35,8 @@ describe 'connect-file-transfer', ->
             testReq =
                 method: 'POST'
                 url: testUrl
-            fileTransferer = transfer: ->
+            fileTransferer = new EventEmitter()
+            fileTransferer.transfer = ->
             spy = sinon.spy fileTransferer, 'transfer'
             connect = connectFileTransfer.connect fileTransferer, testRoot
 
@@ -41,7 +46,8 @@ describe 'connect-file-transfer', ->
 
         it 'should call next if it is other request', ->
             testReq = method: 'otherMethod'
-            connect = connectFileTransfer.connect()
+            fileTransferer = new EventEmitter()
+            connect = connectFileTransfer.connect fileTransferer
             nextSpy = sinon.spy()
 
             connect testReq, null, nextSpy
@@ -53,10 +59,10 @@ describe 'connect-file-transfer', ->
                 method: 'GET'
                 url: testUrl
 
-            it 'should call back with error and call next', (done) ->
-                fileTransferer =
-                    transfer: (filepath, callback) ->
-                        callback testError
+            it 'should call back with error and call next', (done)->
+                fileTransferer = new EventEmitter()
+                fileTransferer.transfer = (filepath) ->
+                    @.emit 'error', testError
                 nextSpy = sinon.spy()
 
                 connect = connectFileTransfer.connect fileTransferer, testRoot, (err, data) ->
@@ -73,11 +79,9 @@ describe 'connect-file-transfer', ->
                 url: testUrl
 
             it 'should call back with "start" status and response should writehead 200 when file transfer starts to transfer', (done) ->
-                fileTransferer =
-                    transfer: (filepath, callback) ->
-                        callback null, {
-                            status: 'start'
-                        }
+                fileTransferer = new EventEmitter()
+                fileTransferer.transfer = (filepath) ->
+                    @.emit 'start'
                 testRes = writeHead: ->
                 writeHeadStub = sinon.stub(testRes, 'writeHead')
 
@@ -90,12 +94,9 @@ describe 'connect-file-transfer', ->
                 connect testReq, testRes
 
             it 'should call response to write content sent by file transferer when it transfers', () ->
-                fileTransferer =
-                    transfer: (filepath, callback) ->
-                        callback null, {
-                            status: 'transfer'
-                            content: testContent
-                        }
+                fileTransferer = new EventEmitter()
+                fileTransferer.transfer = (filepath) ->
+                    @.emit 'transfer', testContent
 
                 testRes = write: ->
                 writeStub = sinon.stub(testRes, 'write')
@@ -106,12 +107,9 @@ describe 'connect-file-transfer', ->
                 writeStub.calledWith(testContent).should.be.true
 
             it 'should call response to end with content sent by file transferer and call back with "complete" status when file transferer completes', (done) ->
-                fileTransferer =
-                    transfer: (filepath, callback) ->
-                        callback null, {
-                            status: 'complete'
-                            content: testContent
-                        }
+                fileTransferer = new EventEmitter()
+                fileTransferer.transfer = (filepath) ->
+                    @.emit 'complete', testContent
 
                 testRes = end: ->
                 endStub = sinon.stub(testRes, 'end')
